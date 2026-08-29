@@ -281,3 +281,64 @@ footer p:first-child { margin-bottom: 6px; color: #fff; font-weight: 500; }
   color: #fff;
   border-color: #111;
 }
+.checkout-page {
+  max-width: 600px;
+  margin: 30px auto;
+  padding: 0 20px 40px;
+}
+
+.checkout-page h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  margin-bottom: 20px;
+}
+
+.checkout-form {
+  margin-top: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.checkout-form input,
+.checkout-form textarea {
+  padding: 12px 14px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  outline: none;
+}
+
+.checkout-form input:focus,
+.checkout-form textarea:focus { border-color: #111; }
+
+#whatsapp-order-btn {
+  padding: 14px;
+  background: #25D366;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+#whatsapp-order-btn:hover { background: #1ebe5a; }
+#whatsapp-order-btn:disabled { background: #ccc; cursor: not-allowed; }
+
+.checkout-btn {
+  width: 100%;
+  padding: 12px;
+  background: #111;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-top: 15px;
+  margin-bottom: 10px;
+}
+
+.checkout-btn:hover { background: #333; }

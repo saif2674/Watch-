@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Product Details - WatchHub</title>
+  <title>Checkout - WatchHub</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
@@ -12,27 +12,27 @@
   <header>
     <h1 onclick="location.href='index.html'" style="cursor:pointer">WATCHHUB</h1>
     <p>Timeless Style, Delivered</p>
-    <button id="cart-btn" onclick="toggleCart()">
-      🛒 Cart (<span id="cart-count">0</span>)
-    </button>
   </header>
 
-  <main id="product-detail" class="product-detail"></main>
+  <main class="checkout-page">
+    <h2>Checkout</h2>
+    <div id="checkout-items"></div>
+    <p class="cart-total-row">Total: ₹<span id="checkout-total">0</span></p>
+
+    <div class="checkout-form">
+      <input type="text" id="cust-name" placeholder="Your Name">
+      <input type="tel" id="cust-phone" placeholder="Your Phone Number">
+      <textarea id="cust-address" placeholder="Delivery Address" rows="3"></textarea>
+      <button id="whatsapp-order-btn">Order via WhatsApp</button>
+    </div>
+  </main>
 
   <footer>
     <p>&copy; 2026 WatchHub. All rights reserved.</p>
     <p>Crafted with precision, delivered with care.</p>
   </footer>
 
-  <div id="cart-panel" class="cart-panel">
-    <h2>Your Cart</h2>
-    <div id="cart-items"></div>
-    <p class="cart-total-row">Total: ₹<span id="cart-total">0</span></p>
-    <button onclick="location.href='checkout.html'" class="checkout-btn">Proceed to Checkout</button>
-    <button onclick="toggleCart()">Close</button>
-  </div>
-
   <script src="js/products.js"></script>
-  <script src="js/product.js"></script>
+  <script src="js/checkout.js"></script>
 </body>
 </html>
