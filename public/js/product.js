@@ -1,26 +1,36 @@
 let cart = [];
 
-const container = document.getElementById("products");
 const cartCountEl = document.getElementById("cart-count");
 const cartPanel = document.getElementById("cart-panel");
 const cartItemsEl = document.getElementById("cart-items");
 const cartTotalEl = document.getElementById("cart-total");
+const detailContainer = document.getElementById("product-detail");
 
-function renderProducts() {
-  products.forEach(p => {
-    const card = document.createElement("div");
-    card.className = "card";
-    card.innerHTML = `
-      <img src="${p.image}" alt="${p.name}" onclick="location.href='product.html?id=${p.id}'" style="cursor:pointer">
-      <div class="card-body">
-        <h3 onclick="location.href='product.html?id=${p.id}'" style="cursor:pointer">${p.name}</h3>
-        <p>${p.description}</p>
-        <p class="price">₹${p.price}</p>
-        <button onclick="addToCart(${p.id})">Add to Cart</button>
+function getProductIdFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  return parseInt(params.get("id"));
+}
+
+function renderProductDetail() {
+  const id = getProductIdFromURL();
+  const product = products.find(p => p.id === id);
+
+  if (!product) {
+    detailContainer.innerHTML = "<p>Product not found.</p>";
+    return;
+  }
+
+  detailContainer.innerHTML = `
+    <div class="detail-card">
+      <img src="${product.image}" alt="${product.name}">
+      <div class="detail-info">
+        <h2>${product.name}</h2>
+        <p>${product.description}</p>
+        <p class="price">₹${product.price}</p>
+        <button onclick="addToCart(${product.id})">Add to Cart</button>
       </div>
-    `;
-    container.appendChild(card);
-  });
+    </div>
+  `;
 }
 
 function addToCart(id) {
@@ -80,4 +90,4 @@ function loadCart() {
 }
 
 loadCart();
-renderProducts();
+renderProductDetail();

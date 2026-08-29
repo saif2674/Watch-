@@ -19,5 +19,40 @@ const products = [
     price: 1999,
     image: "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=500",
     description: "Water-resistant digital sports watch."
+  },
+  {
+    id: 4,
+    name: "Gold Elegance",
+    price: 7999,
+    image: "https://images.unsplash.com/photo-1533139502658-0198f920d8e8?w=500",
+    description: "Gold-plated dress watch for formal occasions."
+  },
+  {
+    id: 5,
+    name: "Diver Pro",
+    price: 5499,
+    image: "https://images.unsplash.com/photo-1548171915-e79a380a2a4b?w=500",
+    description: "200m water resistant diving watch."
+  },
+  {
+    id: 6,
+    name: "Rose Gold Classic",
+    price: 6499,
+    image: "https://images.unsplash.com/photo-1508057198894-247b23fe5ade?w=500",
+    description: "Rose gold case with sapphire crystal glass."
+  },
+  {
+    id: 7,
+    name: "Leather Heritage",
+    price: 3499,
+    image: "https://images.unsplash.com/photo-1495856458515-0637185db551?w=500",
+    description: "Vintage-inspired leather strap watch."
+  },
+  {
+    id: 8,
+    name: "Steel Aviator",
+    price: 5999,
+    image: "https://images.unsplash.com/photo-1587836374828-4dbafa94cf0e?w=500",
+    description: "Pilot-style watch with luminous hands."
   }
 ];

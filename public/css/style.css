@@ -121,3 +121,45 @@ header h1 { font-size: 28px; letter-spacing: 2px; }
   border-radius: 6px;
   cursor: pointer;
 }
+.product-detail {
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 0 20px;
+}
+
+.detail-card {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.detail-card img {
+  width: 100%;
+  max-width: 400px;
+  height: 400px;
+  object-fit: cover;
+}
+
+.detail-info {
+  padding: 20px;
+  flex: 1;
+  min-width: 250px;
+}
+
+.detail-info h2 { margin-bottom: 15px; font-size: 24px; }
+
+.detail-info .price { font-size: 22px; margin: 15px 0; }
+
+.detail-info button {
+  padding: 12px 24px;
+  background: #111;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+}
