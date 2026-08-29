@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Login - WatchHub</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .login-box { max-width: 350px; margin: 80px auto; padding: 30px; border-radius: 12px; box-shadow: 0 3px 12px rgba(0,0,0,0.1); background: #fff; }
+  .login-box input { width: 100%; padding: 10px; margin-bottom: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
+  .login-box button { width: 100%; padding: 10px; border-radius: 8px; border: none; background: #d4af86; color: #fff; font-weight: 600; }
+  #error-msg { color: red; text-align: center; margin-top: 10px; }
+</style>
+</head>
+<body>
+  <div class="login-box">
+    <h2 style="text-align:center;">Admin Login</h2>
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
+    <button id="loginBtn">Login</button>
+    <p id="error-msg"></p>
+  </div>
+
+  <script type="module">
+    import { auth } from "./js/firebase-config.js";
+    import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+
+    document.getElementById("loginBtn").addEventListener("click", async () => {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const errorMsg = document.getElementById("error-msg");
+      errorMsg.textContent = "";
+
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        window.location.href = "admin-dashboard.html";
+      } catch (err) {
+        errorMsg.textContent = "Login failed: " + err.message;
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard - WatchHub</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .admin-wrap { max-width: 700px; margin: 20px auto; padding: 0 15px; }
+  .admin-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+  .logout-btn { background:#333; color:#fff; border:none; padding:8px 14px; border-radius:8px; }
+  .product-form { background:#fff; padding:15px; border-radius:12px; box-shadow:0 3px 12px rgba(0,0,0,0.08); margin-bottom:20px; }
+  .product-form input, .product-form select, .product-form textarea { width:100%; padding:8px; margin-bottom:10px; border:1px solid #ccc; border-radius:8px; box-sizing:border-box; }
+  .product-form button { padding:10px 16px; border:none; border-radius:8px; background:#d4af86; color:#fff; font-weight:600; }
+  .admin-product-row { display:flex; justify-content:space-between; align-items:center; background:#fff; padding:10px; border-radius:10px; margin-bottom:8px; box-shadow:0 2px 6px rgba(0,0,0,0.06); }
+  .admin-product-row img { width:45px; height:45px; object-fit:cover; border-radius:6px; margin-right:10px; }
+  .row-info { display:flex; align-items:center; flex:1; }
+  .row-actions button { margin-left:6px; padding:5px 10px; border:none; border-radius:6px; }
+  .edit-btn { background:#eee; }
+  .delete-btn { background:#e77; color:#fff; }
+</style>
+</head>
+<body>
+  <div class="admin-wrap">
+    <div class="admin-header">
+      <h2>Admin Dashboard</h2>
+      <button class="logout-btn" id="logoutBtn">Logout</button>
+    </div>
+
+    <div class="product-form">
+      <h3 id="form-title">Add New Product</h3>
+      <input type="hidden" id="edit-id">
+      <input type="text" id="p-name" placeholder="Name">
+      <input type="number" id="p-price" placeholder="Price">
+      <select id="p-category">
+        <option value="Chronograph">Chronograph</option>
+        <option value="Sport">Sport</option>
+        <option value="Luxury">Luxury</option>
+        <option value="Minimalist">Minimalist</option>
+      </select>
+      <input type="text" id="p-image" placeholder="Image URL">
+      <textarea id="p-description" placeholder="Description" rows="2"></textarea>
+      <button id="saveBtn">Save Product</button>
+      <button id="cancelEditBtn" style="display:none; background:#999; margin-left:8px;">Cancel Edit</button>
+    </div>
+
+    <h3>Existing Products</h3>
+    <div id="admin-products-list"></div>
+  </div>
+
+  <script type="module">
+    import { auth, db } from "./js/firebase-config.js";
+    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+    import { collection, getDocs, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+
+    // Protect page - redirect to login if not authenticated
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        window.location.href = "admin-login.html";
+      } else {
+        loadProducts();
+      }
+    });
+
+    document.getElementById("logoutBtn").addEventListener("click", async () => {
+      await signOut(auth);
+      window.location.href = "admin-login.html";
+    });
+
+    const listEl = document.getElementById("admin-products-list");
+    const formTitle = document.getElementById("form-title");
+    const editIdEl = document.getElementById("edit-id");
+    const nameEl = document.getElementById("p-name");
+    const priceEl = document.getElementById("p-price");
+    const categoryEl = document.getElementById("p-category");
+    const imageEl = document.getElementById("p-image");
+    const descEl = document.getElementById("p-description");
+    const cancelEditBtn = document.getElementById("cancelEditBtn");
+
+    async function loadProducts() {
+      listEl.innerHTML = "Loading...";
+      const snapshot = await getDocs(collection(db, "products"));
+      const items = snapshot.docs.map(d => d.data());
+      listEl.innerHTML = "";
+
+      items.sort((a, b) => a.id - b.id);
+
+      items.forEach(p => {
+        const row = document.createElement("div");
+        row.className = "admin-product-row";
+        row.innerHTML = `
+          <div class="row-info">
+            <img src="${p.image}" alt="${p.name}">
+            <div>
+              <strong>${p.name}</strong><br>
+              <span>Rs ${p.price} - ${p.category}</span>
+            </div>
+          </div>
+          <div class="row-actions">
+            <button class="edit-btn">Edit</button>
+            <button class="delete-btn">Delete</button>
+          </div>
+        `;
+        row.querySelector(".edit-btn").addEventListener("click", () => startEdit(p));
+        row.querySelector(".delete-btn").addEventListener("click", () => deleteProduct(p.id));
+        listEl.appendChild(row);
+      });
+    }
+
+    function startEdit(p) {
+      formTitle.textContent = "Edit Product";
+      editIdEl.value = p.id;
+      nameEl.value = p.name;
+      priceEl.value = p.price;
+      categoryEl.value = p.category;
+      imageEl.value = p.image;
+      descEl.value = p.description;
+      cancelEditBtn.style.display = "inline-block";
+      window.scrollTo(0, 0);
+    }
+
+    cancelEditBtn.addEventListener("click", resetForm);
+
+    function resetForm() {
+      formTitle.textContent = "Add New Product";
+      editIdEl.value = "";
+      nameEl.value = "";
+      priceEl.value = "";
+      categoryEl.value = "Chronograph";
+      imageEl.value = "";
+      descEl.value = "";
+      cancelEditBtn.style.display = "none";
+    }
+
+    document.getElementById("saveBtn").addEventListener("click", async () => {
+      let id = editIdEl.value;
+
+      if (!id) {
+        // New product - generate next id
+        const snapshot = await getDocs(collection(db, "products"));
+        const existingIds = snapshot.docs.map(d => d.data().id);
+        id = existingIds.length ? Math.max(...existingIds) + 1 : 1;
+      } else {
+        id = parseInt(id);
+      }
+
+      const product = {
+        id: id,
+        name: nameEl.value,
+        price: parseFloat(priceEl.value),
+        category: categoryEl.value,
+        image: imageEl.value,
+        description: descEl.value
+      };
+
+      await setDoc(doc(db, "products", String(id)), product);
+      resetForm();
+      loadProducts();
+    });
+
+    async function deleteProduct(id) {
+      if (!confirm("Delete this product?")) return;
+      await deleteDoc(doc(db, "products", String(id)));
+      loadProducts();
+    }
+  </script>
+</body>
+</html>

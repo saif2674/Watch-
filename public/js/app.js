@@ -1,3 +1,7 @@
+import { db } from "./firebase-config.js";
+import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+
+let products = [];
 let cart = [];
 let currentCategory = "All";
 let currentSearch = "";
@@ -9,6 +13,13 @@ const cartItemsEl = document.getElementById("cart-items");
 const cartTotalEl = document.getElementById("cart-total");
 const searchBox = document.getElementById("search-box");
 const filterButtons = document.getElementById("filter-buttons");
+
+async function fetchProducts() {
+  container.innerHTML = "<p style='padding:20px;text-align:center;grid-column:1/-1;'>Loading watches...</p>";
+  const snapshot = await getDocs(collection(db, "products"));
+  products = snapshot.docs.map(doc => doc.data());
+  renderProducts();
+}
 
 function renderProducts() {
   container.innerHTML = "";
@@ -161,5 +172,11 @@ function loadCart() {
   }
 }
 
+window.addToCart = addToCart;
+window.increaseQty = increaseQty;
+window.decreaseQty = decreaseQty;
+window.removeFromCart = removeFromCart;
+window.toggleCart = toggleCart;
+
 loadCart();
-renderProducts();
+fetchProducts();

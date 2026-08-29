@@ -1,4 +1,8 @@
+import { db } from "./firebase-config.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+
 let cart = [];
+let currentProduct = null;
 
 const cartCountEl = document.getElementById("cart-count");
 const cartPanel = document.getElementById("cart-panel");
@@ -8,33 +12,37 @@ const detailContainer = document.getElementById("product-detail");
 
 function getProductIdFromURL() {
   const params = new URLSearchParams(window.location.search);
-  return parseInt(params.get("id"));
+  return params.get("id");
 }
 
-function renderProductDetail() {
+async function renderProductDetail() {
   const id = getProductIdFromURL();
-  const product = products.find(p => p.id === id);
+  detailContainer.innerHTML = "<p style='padding:20px;text-align:center;'>Loading...</p>";
 
-  if (!product) {
+  const snap = await getDoc(doc(db, "products", String(id)));
+
+  if (!snap.exists()) {
     detailContainer.innerHTML = "<p>Product not found.</p>";
     return;
   }
 
+  currentProduct = snap.data();
+
   detailContainer.innerHTML = `
     <div class="detail-card">
-      <img src="${product.image}" alt="${product.name}">
+      <img src="${currentProduct.image}" alt="${currentProduct.name}">
       <div class="detail-info">
-        <h2>${product.name}</h2>
-        <p>${product.description}</p>
-        <p class="price">Rs ${product.price}</p>
-        <button onclick="addToCart(${product.id})">Add to Cart</button>
+        <h2>${currentProduct.name}</h2>
+        <p>${currentProduct.description}</p>
+        <p class="price">Rs ${currentProduct.price}</p>
+        <button onclick="addToCart(${currentProduct.id})">Add to Cart</button>
       </div>
     </div>
   `;
 }
 
 function addToCart(id) {
-  const product = products.find(p => p.id === id);
+  const product = currentProduct;
   const existing = cart.find(item => item.id === id);
   if (existing) {
     existing.qty += 1;
@@ -123,6 +131,12 @@ function loadCart() {
     renderCart();
   }
 }
+
+window.addToCart = addToCart;
+window.increaseQty = increaseQty;
+window.decreaseQty = decreaseQty;
+window.removeFromCart = removeFromCart;
+window.toggleCart = toggleCart;
 
 loadCart();
 renderProductDetail();
