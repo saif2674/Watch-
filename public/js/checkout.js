@@ -22,7 +22,7 @@ function renderCheckout() {
     row.className = "cart-item";
     row.innerHTML = `
       <span>${item.name} x${item.qty}</span>
-      <span>₹${item.price * item.qty}</span>
+      <span>Rs ${item.price * item.qty}</span>
     `;
     checkoutItemsEl.appendChild(row);
   });
@@ -42,10 +42,10 @@ whatsappBtn.addEventListener("click", () => {
 
   let message = `Hello WatchHub! I'd like to place an order:%0A%0A`;
   cart.forEach(item => {
-    message += `${item.name} x${item.qty} - ₹${item.price * item.qty}%0A`;
+    message += `${item.name} x${item.qty} - Rs ${item.price * item.qty}%0A`;
   });
   const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-  message += `%0ATotal: ₹${total}%0A%0A`;
+  message += `%0ATotal: Rs ${total}%0A%0A`;
   message += `Name: ${name}%0APhone: ${phone}%0AAddress: ${address}`;
 
   const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`;

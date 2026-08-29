@@ -32,12 +32,28 @@ function renderProducts() {
       <div class="card-body">
         <h3 onclick="location.href='product.html?id=${p.id}'" style="cursor:pointer">${p.name}</h3>
         <p>${p.description}</p>
-        <p class="price">₹${p.price}</p>
+        <p class="price">Rs ${p.price}</p>
         <button onclick="addToCart(${p.id})">Add to Cart</button>
       </div>
     `;
     container.appendChild(card);
   });
+
+  observeCards();
+}
+
+function observeCards() {
+  const cards = document.querySelectorAll(".card");
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("in-view");
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  cards.forEach(card => observer.observe(card));
 }
 
 searchBox.addEventListener("input", (e) => {
@@ -65,6 +81,29 @@ function addToCart(id) {
   renderCart();
   saveCart();
   cartPanel.classList.add("open");
+  document.getElementById("cart-btn").classList.add("cart-pulse");
+  setTimeout(() => {
+    document.getElementById("cart-btn").classList.remove("cart-pulse");
+  }, 400);
+}
+
+function increaseQty(id) {
+  const item = cart.find(i => i.id === id);
+  if (item) item.qty += 1;
+  renderCart();
+  saveCart();
+}
+
+function decreaseQty(id) {
+  const item = cart.find(i => i.id === id);
+  if (item) {
+    item.qty -= 1;
+    if (item.qty <= 0) {
+      cart = cart.filter(i => i.id !== id);
+    }
+  }
+  renderCart();
+  saveCart();
 }
 
 function removeFromCart(id) {
@@ -80,14 +119,25 @@ function renderCart() {
   cartItemsEl.innerHTML = "";
   let total = 0;
 
+  if (cart.length === 0) {
+    cartItemsEl.innerHTML = "<p style='padding:10px 0;color:#888;'>Your cart is empty.</p>";
+  }
+
   cart.forEach(item => {
     total += item.price * item.qty;
     const row = document.createElement("div");
     row.className = "cart-item";
     row.innerHTML = `
-      <span>${item.name} x${item.qty}</span>
-      <span>₹${item.price * item.qty}</span>
-      <button onclick="removeFromCart(${item.id})">✕</button>
+      <div class="cart-item-info">
+        <span class="cart-item-name">${item.name}</span>
+        <span class="cart-item-price">Rs ${item.price * item.qty}</span>
+      </div>
+      <div class="qty-controls">
+        <button onclick="decreaseQty(${item.id})">-</button>
+        <span>${item.qty}</span>
+        <button onclick="increaseQty(${item.id})">+</button>
+      </div>
+      <button class="remove-btn" onclick="removeFromCart(${item.id})">✕</button>
     `;
     cartItemsEl.appendChild(row);
   });
