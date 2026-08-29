@@ -1,13 +1,30 @@
 let cart = [];
+let currentCategory = "All";
+let currentSearch = "";
 
 const container = document.getElementById("products");
 const cartCountEl = document.getElementById("cart-count");
 const cartPanel = document.getElementById("cart-panel");
 const cartItemsEl = document.getElementById("cart-items");
 const cartTotalEl = document.getElementById("cart-total");
+const searchBox = document.getElementById("search-box");
+const filterButtons = document.getElementById("filter-buttons");
 
 function renderProducts() {
-  products.forEach(p => {
+  container.innerHTML = "";
+
+  const filtered = products.filter(p => {
+    const matchesCategory = currentCategory === "All" || p.category === currentCategory;
+    const matchesSearch = p.name.toLowerCase().includes(currentSearch.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
+
+  if (filtered.length === 0) {
+    container.innerHTML = "<p style='padding:20px;text-align:center;grid-column:1/-1;'>No watches found.</p>";
+    return;
+  }
+
+  filtered.forEach(p => {
     const card = document.createElement("div");
     card.className = "card";
     card.innerHTML = `
@@ -22,6 +39,20 @@ function renderProducts() {
     container.appendChild(card);
   });
 }
+
+searchBox.addEventListener("input", (e) => {
+  currentSearch = e.target.value;
+  renderProducts();
+});
+
+filterButtons.addEventListener("click", (e) => {
+  if (e.target.classList.contains("filter-btn")) {
+    document.querySelectorAll(".filter-btn").forEach(btn => btn.classList.remove("active"));
+    e.target.classList.add("active");
+    currentCategory = e.target.dataset.category;
+    renderProducts();
+  }
+});
 
 function addToCart(id) {
   const product = products.find(p => p.id === id);
