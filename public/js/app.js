@@ -64,6 +64,7 @@ function addToCart(id) {
   }
   renderCart();
   saveCart();
+  cartPanel.classList.add("open");
 }
 
 function removeFromCart(id) {
