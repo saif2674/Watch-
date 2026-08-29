@@ -4,18 +4,30 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WatchHub - Premium Watches</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <header>
-    <h1>WATCHHUB</h1>
+    <h1 onclick="location.href='index.html'" style="cursor:pointer">WATCHHUB</h1>
     <p>Timeless Style, Delivered</p>
     <button id="cart-btn" onclick="toggleCart()">
       🛒 Cart (<span id="cart-count">0</span>)
     </button>
   </header>
 
+  <section class="hero">
+    <h2>Elevate Every Moment</h2>
+    <p>Handpicked timepieces for every occasion</p>
+  </section>
+
   <main class="products" id="products"></main>
+
+  <footer>
+    <p>&copy; 2026 WatchHub. All rights reserved.</p>
+    <p>Crafted with precision, delivered with care.</p>
+  </footer>
 
   <div id="cart-panel" class="cart-panel">
     <h2>Your Cart</h2>
