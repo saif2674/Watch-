@@ -1,13 +1,14 @@
-const admin = require("firebase-admin");
+const { initializeApp, cert, getApps } = require("firebase-admin/app");
+const { getFirestore, FieldValue } = require("firebase-admin/firestore");
 
-if (!admin.apps.length) {
+if (!getApps().length) {
   const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount)
+  initializeApp({
+    credential: cert(serviceAccount)
   });
 }
 
-const db = admin.firestore();
+const db = getFirestore();
 
 module.exports = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -78,7 +79,7 @@ module.exports = async (req, res) => {
       items: orderItems,
       total: total,
       status: "New",
-      createdAt: admin.firestore.FieldValue.serverTimestamp()
+      createdAt: FieldValue.serverTimestamp()
     });
 
     return res.status(200).json({
