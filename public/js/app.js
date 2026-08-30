@@ -88,6 +88,7 @@ async function renderProducts() {
         <p>${p.description}</p>
         <p class="price">Rs ${p.price}</p>
         <button onclick="addToCart(${p.id})" ${inStock ? "" : "disabled"}>${inStock ? "Add to Cart" : "Out of Stock"}</button>
+        <button class="view-more-btn" onclick="location.href='product.html?id=${p.id}'">View More</button>
       </div>
     `;
     container.appendChild(card);
