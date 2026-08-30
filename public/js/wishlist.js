@@ -15,7 +15,7 @@ async function render() {
   container.innerHTML = "";
   items.forEach(p => {
     const card = document.createElement("div");
-    card.className = "card";
+    card.className = "card in-view";
     card.innerHTML = `
       <img src="${p.image}" alt="${p.name}" onclick="location.href='product.html?id=${p.id}'" style="cursor:pointer;">
       <div class="card-body">
