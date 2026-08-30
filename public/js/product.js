@@ -1,5 +1,6 @@
-import { db } from "./firebase-config.js";
+import { db, auth } from "./firebase-config.js";
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+import { toggleWishlist, isInWishlist } from "./wishlist-utils.js";
 
 let cart = [];
 let currentProduct = null;
@@ -45,6 +46,7 @@ async function renderProductDetail() {
 
   currentProduct = snap.data();
   const inStock = currentProduct.inStock !== false;
+  const isFav = auth.currentUser ? await isInWishlist(currentProduct.id) : false;
 
   const allImages = [currentProduct.image, ...(currentProduct.gallery || [])].filter(Boolean);
 
@@ -53,7 +55,7 @@ async function renderProductDetail() {
         ${allImages.map((url, i) => `
           <img src="${url}" class="thumb-img ${i === 0 ? 'active-thumb' : ''}" data-url="${url}" onclick="changeMainImage('${url}')">
         `).join("")}
-      </div>`
+        </div>`
     : "";
 
   detailContainer.innerHTML = `
@@ -61,6 +63,7 @@ async function renderProductDetail() {
       <div style="position:relative;">
         <img id="main-product-img" src="${currentProduct.image}" alt="${currentProduct.name}" style="${inStock ? "" : "opacity:0.5;"}">
         ${inStock ? "" : '<span class="stock-badge">Out of Stock</span>'}
+        <button id="wishlist-detail-btn" style="position:absolute;top:8px;right:8px;background:rgba(255,255,255,0.85);border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:18px;">${isFav ? "❤" : "🤍"}</button>
       </div>
       ${thumbsHtml}
       <div class="detail-info">
@@ -71,6 +74,15 @@ async function renderProductDetail() {
       </div>
     </div>
   `;
+
+  document.getElementById("wishlist-detail-btn").addEventListener("click", async () => {
+    if (!auth.currentUser) {
+      alert("Please login to save favorites.");
+      return;
+    }
+    const nowFav = await toggleWishlist(currentProduct);
+    document.getElementById("wishlist-detail-btn").textContent = nowFav ? "❤" : "🤍";
+  });
 }
 
 function addToCart(id) {

@@ -1,5 +1,6 @@
-import { db } from "./firebase-config.js";
+import { db, auth } from "./firebase-config.js";
 import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+import { toggleWishlist, isInWishlist } from "./wishlist-utils.js";
 
 let products = [];
 let cart = [];
@@ -51,7 +52,7 @@ function renderCategoryFilters() {
   });
 }
 
-function renderProducts() {
+async function renderProducts() {
   container.innerHTML = "";
 
   const filtered = products.filter(p => {
@@ -65,14 +66,17 @@ function renderProducts() {
     return;
   }
 
-  filtered.forEach(p => {
+  for (const p of filtered) {
     const inStock = p.inStock !== false;
+    const isFav = auth.currentUser ? await isInWishlist(p.id) : false;
+
     const card = document.createElement("div");
     card.className = "card";
     card.innerHTML = `
       <div style="position:relative;">
         <img src="${p.image}" alt="${p.name}" onclick="location.href='product.html?id=${p.id}'" style="cursor:pointer; ${inStock ? "" : "opacity:0.5;"}">
         ${inStock ? "" : '<span class="stock-badge">Out of Stock</span>'}
+        <button class="wishlist-icon-btn" data-id="${p.id}" style="position:absolute;top:8px;right:8px;background:rgba(255,255,255,0.85);border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:16px;">${isFav ? "❤" : "🤍"}</button>
       </div>
       <div class="card-body">
         <h3 onclick="location.href='product.html?id=${p.id}'" style="cursor:pointer">${p.name}</h3>
@@ -82,6 +86,20 @@ function renderProducts() {
       </div>
     `;
     container.appendChild(card);
+  }
+
+  document.querySelectorAll(".wishlist-icon-btn").forEach(btn => {
+    btn.addEventListener("click", async (e) => {
+      e.stopPropagation();
+      if (!auth.currentUser) {
+        alert("Please login to save favorites.");
+        return;
+      }
+      const id = Number(btn.dataset.id);
+      const product = products.find(p => p.id === id);
+      const nowFav = await toggleWishlist(product);
+      btn.textContent = nowFav ? "❤" : "🤍";
+    });
   });
 
   observeCards();
