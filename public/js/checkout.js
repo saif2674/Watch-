@@ -43,10 +43,17 @@ whatsappBtn.addEventListener("click", async () => {
     return;
   }
 
+  if (cart.length === 0) {
+    alert("Your cart is empty.");
+    return;
+  }
+
   const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
 
   whatsappBtn.disabled = true;
   whatsappBtn.textContent = "Placing order...";
+
+  let orderSaved = false;
 
   try {
     await addDoc(collection(db, "orders"), {
@@ -63,20 +70,29 @@ whatsappBtn.addEventListener("click", async () => {
       status: "New",
       createdAt: serverTimestamp()
     });
+    orderSaved = true;
   } catch (err) {
     console.error("Order save failed:", err);
   }
 
-  let message = `Hello WatchHub! I'd like to place an order:%0A%0A`;
-  cart.forEach(item => {
-    message += `${item.name} x${item.qty} - Rs ${item.price * item.qty}%0A`;
-  });
-  message += `%0ATotal: Rs ${total}%0A%0A`;
-  message += `Name: ${name}%0APhone: ${phone}%0AAddress: ${address}`;
+  if (!orderSaved) {
+    alert("Sorry, we couldn't save your order right now. Please check your internet connection and try again.");
+    whatsappBtn.disabled = false;
+    whatsappBtn.textContent = "Order via WhatsApp";
+    return;
+  }
 
-  const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`;
+  let message = `Hello WatchHub! I'd like to place an order:\n\n`;
+  cart.forEach(item => {
+    message += `${item.name} x${item.qty} - Rs ${item.price * item.qty}\n`;
+  });
+  message += `\nTotal: Rs ${total}\n\n`;
+  message += `Name: ${name}\nPhone: ${phone}\nAddress: ${address}`;
+
+  const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
   window.open(url, "_blank");
 
+  localStorage.removeItem("watchCart");
   whatsappBtn.disabled = false;
   whatsappBtn.textContent = "Order via WhatsApp";
 });
