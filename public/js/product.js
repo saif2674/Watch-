@@ -27,15 +27,19 @@ async function renderProductDetail() {
   }
 
   currentProduct = snap.data();
+  const inStock = currentProduct.inStock !== false;
 
   detailContainer.innerHTML = `
     <div class="detail-card">
-      <img src="${currentProduct.image}" alt="${currentProduct.name}">
+      <div style="position:relative;">
+        <img src="${currentProduct.image}" alt="${currentProduct.name}" style="${inStock ? "" : "opacity:0.5;"}">
+        ${inStock ? "" : '<span class="stock-badge">Out of Stock</span>'}
+      </div>
       <div class="detail-info">
         <h2>${currentProduct.name}</h2>
         <p>${currentProduct.description}</p>
         <p class="price">Rs ${currentProduct.price}</p>
-        <button onclick="addToCart(${currentProduct.id})">Add to Cart</button>
+        <button onclick="addToCart(${currentProduct.id})" ${inStock ? "" : "disabled"}>${inStock ? "Add to Cart" : "Out of Stock"}</button>
       </div>
     </div>
   `;
@@ -43,6 +47,7 @@ async function renderProductDetail() {
 
 function addToCart(id) {
   const product = currentProduct;
+  if (!product || product.inStock === false) return;
   const existing = cart.find(item => item.id === id);
   if (existing) {
     existing.qty += 1;

@@ -12,12 +12,15 @@
   .product-form { background:#fff; padding:15px; border-radius:12px; box-shadow:0 3px 12px rgba(0,0,0,0.08); margin-bottom:20px; }
   .product-form input, .product-form select, .product-form textarea { width:100%; padding:8px; margin-bottom:10px; border:1px solid #ccc; border-radius:8px; box-sizing:border-box; }
   .product-form button { padding:10px 16px; border:none; border-radius:8px; background:#d4af86; color:#fff; font-weight:600; }
+  .stock-check { display:flex; align-items:center; gap:8px; margin-bottom:12px; }
+  .stock-check input { width:auto; margin:0; }
   .admin-product-row { display:flex; justify-content:space-between; align-items:center; background:#fff; padding:10px; border-radius:10px; margin-bottom:8px; box-shadow:0 2px 6px rgba(0,0,0,0.06); }
   .admin-product-row img { width:45px; height:45px; object-fit:cover; border-radius:6px; margin-right:10px; }
   .row-info { display:flex; align-items:center; flex:1; }
   .row-actions button { margin-left:6px; padding:5px 10px; border:none; border-radius:6px; }
   .edit-btn { background:#eee; }
   .delete-btn { background:#e77; color:#fff; }
+  .out-of-stock-tag { color:#c0392b; font-weight:600; font-size:13px; }
 </style>
 </head>
 <body>
@@ -32,14 +35,14 @@
       <input type="hidden" id="edit-id">
       <input type="text" id="p-name" placeholder="Name">
       <input type="number" id="p-price" placeholder="Price">
-      <select id="p-category">
-        <option value="Chronograph">Chronograph</option>
-        <option value="Sport">Sport</option>
-        <option value="Luxury">Luxury</option>
-        <option value="Minimalist">Minimalist</option>
-      </select>
+      <input type="text" id="p-category" list="category-list" placeholder="Category (existing or new)">
+      <datalist id="category-list"></datalist>
       <input type="text" id="p-image" placeholder="Image URL">
       <textarea id="p-description" placeholder="Description" rows="2"></textarea>
+      <div class="stock-check">
+        <input type="checkbox" id="p-instock" checked>
+        <label for="p-instock">In Stock</label>
+      </div>
       <button id="saveBtn">Save Product</button>
       <button id="cancelEditBtn" style="display:none; background:#999; margin-left:8px;">Cancel Edit</button>
     </div>
@@ -53,7 +56,6 @@
     import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
     import { collection, getDocs, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 
-    // Protect page - redirect to login if not authenticated
     onAuthStateChanged(auth, (user) => {
       if (!user) {
         window.location.href = "admin-login.html";
@@ -73,8 +75,10 @@
     const nameEl = document.getElementById("p-name");
     const priceEl = document.getElementById("p-price");
     const categoryEl = document.getElementById("p-category");
+    const categoryListEl = document.getElementById("category-list");
     const imageEl = document.getElementById("p-image");
     const descEl = document.getElementById("p-description");
+    const inStockEl = document.getElementById("p-instock");
     const cancelEditBtn = document.getElementById("cancelEditBtn");
 
     async function loadProducts() {
@@ -85,7 +89,16 @@
 
       items.sort((a, b) => a.id - b.id);
 
+      const categories = [...new Set(items.map(p => p.category))].sort();
+      categoryListEl.innerHTML = "";
+      categories.forEach(cat => {
+        const opt = document.createElement("option");
+        opt.value = cat;
+        categoryListEl.appendChild(opt);
+      });
+
       items.forEach(p => {
+        const inStock = p.inStock !== false;
         const row = document.createElement("div");
         row.className = "admin-product-row";
         row.innerHTML = `
@@ -93,7 +106,8 @@
             <img src="${p.image}" alt="${p.name}">
             <div>
               <strong>${p.name}</strong><br>
-              <span>Rs ${p.price} - ${p.category}</span>
+              <span>Rs ${p.price} - ${p.category}</span><br>
+              ${inStock ? "" : '<span class="out-of-stock-tag">Out of Stock</span>'}
             </div>
           </div>
           <div class="row-actions">
@@ -115,6 +129,7 @@
       categoryEl.value = p.category;
       imageEl.value = p.image;
       descEl.value = p.description;
+      inStockEl.checked = p.inStock !== false;
       cancelEditBtn.style.display = "inline-block";
       window.scrollTo(0, 0);
     }
@@ -126,17 +141,22 @@
       editIdEl.value = "";
       nameEl.value = "";
       priceEl.value = "";
-      categoryEl.value = "Chronograph";
+      categoryEl.value = "";
       imageEl.value = "";
       descEl.value = "";
+      inStockEl.checked = true;
       cancelEditBtn.style.display = "none";
     }
 
     document.getElementById("saveBtn").addEventListener("click", async () => {
       let id = editIdEl.value;
 
+      if (!nameEl.value || !priceEl.value || !categoryEl.value) {
+        alert("Please fill name, price and category.");
+        return;
+      }
+
       if (!id) {
-        // New product - generate next id
         const snapshot = await getDocs(collection(db, "products"));
         const existingIds = snapshot.docs.map(d => d.data().id);
         id = existingIds.length ? Math.max(...existingIds) + 1 : 1;
@@ -148,9 +168,10 @@
         id: id,
         name: nameEl.value,
         price: parseFloat(priceEl.value),
-        category: categoryEl.value,
+        category: categoryEl.value.trim(),
         image: imageEl.value,
-        description: descEl.value
+        description: descEl.value,
+        inStock: inStockEl.checked
       };
 
       await setDoc(doc(db, "products", String(id)), product);
