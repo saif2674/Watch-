@@ -15,9 +15,18 @@ function getProductIdFromURL() {
   return params.get("id");
 }
 
+function renderDetailLoader() {
+  detailContainer.innerHTML = `
+    <div class="watch-loader-wrap">
+      <div class="watch-loader"></div>
+      <p class="watch-loader-text">Fetching your timepiece...</p>
+    </div>
+  `;
+}
+
 async function renderProductDetail() {
   const id = getProductIdFromURL();
-  detailContainer.innerHTML = "<p style='padding:20px;text-align:center;'>Loading...</p>";
+  renderDetailLoader();
 
   const snap = await getDoc(doc(db, "products", String(id)));
 
