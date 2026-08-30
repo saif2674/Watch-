@@ -35,6 +35,8 @@ async function fetchProducts() {
   const snapshot = await getDocs(collection(db, "products"));
   products = snapshot.docs.map(doc => doc.data());
   renderCategoryFilters();
+  const loader = document.getElementById("page-loader");
+  if (loader) loader.classList.add("loader-hidden");
   renderProducts();
 }
 

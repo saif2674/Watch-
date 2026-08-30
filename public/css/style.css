@@ -643,3 +643,84 @@ button:active { transform: scale(0.96); }
   45% { transform: scale(1.2); }
   60% { transform: scale(1); }
 }
+
+/* Page Loader - Watch Themed */
+#page-loader {
+  position: fixed;
+  inset: 0;
+  background: #0d0d0d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+#page-loader.loader-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.watch-loader-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+.wl-face {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 3px solid #d4af86;
+  position: relative;
+  box-shadow: 0 0 25px rgba(212,175,132,0.35);
+}
+.wl-hand {
+  position: absolute;
+  background: #d4af86;
+  border-radius: 4px;
+  transform-origin: bottom center;
+  bottom: 50%;
+  left: 50%;
+}
+.wl-hour {
+  width: 3px;
+  height: 20px;
+  margin-left: -1.5px;
+  animation: wl-spin-hour 3s linear infinite;
+}
+.wl-minute {
+  width: 2px;
+  height: 28px;
+  margin-left: -1px;
+  animation: wl-spin-minute 1.2s linear infinite;
+}
+.wl-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  background: #d4af86;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+@keyframes wl-spin-hour {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes wl-spin-minute {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.wl-text {
+  color: #fff;
+  font-size: 15px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  opacity: 0.85;
+  animation: wl-pulse 1.5s ease-in-out infinite;
+}
+@keyframes wl-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.9; }
+}
