@@ -7,13 +7,28 @@
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<header>
+
+<div id="page-loader">
+  <div class="watch-loader-main">
+    <div class="wl-face">
+      <div class="wl-hand wl-hour"></div>
+      <div class="wl-hand wl-minute"></div>
+      <div class="wl-center"></div>
+    </div>
+    <p class="wl-text">WatchHub</p>
+  </div>
+</div>
+
+<header class="wishlist-header">
   <a href="index.html" style="text-decoration:none;color:inherit;"><h2>WatchHub</h2></a>
-  <a href="index.html" style="margin-left:auto;">Back to Shop</a>
+  <a href="index.html" class="back-to-shop-link">← Back to Shop</a>
 </header>
 
-<main style="padding:20px;">
-  <h2>My Wishlist</h2>
+<main class="wishlist-main">
+  <div class="wishlist-title-row">
+    <h1 class="wishlist-title">My Wishlist</h1>
+    <p class="wishlist-subtitle">Your handpicked favorites, saved for later</p>
+  </div>
   <div id="wishlist-container" class="products"></div>
 </main>
 

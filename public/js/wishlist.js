@@ -4,40 +4,63 @@ import { getWishlistItems, removeFromWishlist } from "./wishlist-utils.js";
 
 const container = document.getElementById("wishlist-container");
 
+function hideLoader() {
+  const loader = document.getElementById("page-loader");
+  if (loader) loader.classList.add("loader-hidden");
+}
+
+function showEmptyState(message, showLoginLink = false) {
+  container.innerHTML = `
+    <div class="wishlist-empty">
+      <div class="wishlist-empty-icon">🤍</div>
+      <p class="wishlist-empty-text">${message}</p>
+      ${showLoginLink ? '<a href="account.html" class="wishlist-empty-btn">Login</a>' : '<a href="index.html" class="wishlist-empty-btn">Browse Watches</a>'}
+    </div>
+  `;
+}
+
 async function render() {
   const items = await getWishlistItems();
+  hideLoader();
 
   if (items.length === 0) {
-    container.innerHTML = "<p>Your wishlist is empty.</p>";
+    showEmptyState("Your wishlist is empty. Start adding watches you love.");
     return;
   }
 
   container.innerHTML = "";
-  items.forEach(p => {
+  items.forEach((p, i) => {
     const card = document.createElement("div");
-    card.className = "card in-view";
+    card.className = "card in-view wishlist-card";
+    card.style.animationDelay = `${i * 0.08}s`;
     card.innerHTML = `
-      <img src="${p.image}" alt="${p.name}" onclick="location.href='product.html?id=${p.id}'" style="cursor:pointer;">
+      <div style="position:relative;">
+        <img src="${p.image}" alt="${p.name}" onclick="location.href='product.html?id=${p.id}'" style="cursor:pointer;">
+        <button class="remove-wishlist-btn" data-id="${p.id}" title="Remove from wishlist">✕</button>
+      </div>
       <div class="card-body">
         <h3 onclick="location.href='product.html?id=${p.id}'" style="cursor:pointer">${p.name}</h3>
         <p class="price">Rs ${p.price}</p>
-        <button data-id="${p.id}" class="remove-wishlist-btn">Remove</button>
       </div>
     `;
     container.appendChild(card);
   });
 
   document.querySelectorAll(".remove-wishlist-btn").forEach(btn => {
-    btn.addEventListener("click", async () => {
+    btn.addEventListener("click", async (e) => {
+      e.stopPropagation();
+      const card = btn.closest(".wishlist-card");
+      card.classList.add("wishlist-card-removing");
       await removeFromWishlist(Number(btn.dataset.id));
-      render();
+      setTimeout(() => render(), 300);
     });
   });
 }
 
 onAuthStateChanged(auth, (user) => {
+  hideLoader();
   if (!user) {
-    container.innerHTML = "<p>Please <a href='account.html'>login</a> to view your wishlist.</p>";
+    showEmptyState("Please login to view your saved favorites.", true);
     return;
   }
   render();
