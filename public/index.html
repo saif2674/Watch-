@@ -14,14 +14,14 @@
 </head>
 <body>
   <div id="page-loader">
-    <div class="watch-loader-main">
-      <div class="wl-face">
-        <div class="wl-hand wl-hour"></div>
-        <div class="wl-hand wl-minute"></div>
-        <div class="wl-center"></div>
-      </div>
-      <p class="wl-text">WatchHub</p>
+    <div class="wh-loader">
+      <svg class="wh-ring" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(212,175,134,0.15)" stroke-width="3"/>
+        <circle cx="50" cy="50" r="42" fill="none" stroke="#d4af86" stroke-width="3" stroke-linecap="round" class="wh-ring-progress"/>
+      </svg>
+      <div class="wh-diamond"></div>
     </div>
+    <p class="wh-loader-text">WATCHHUB</p>
   </div>
   <div class="top-bar">
     <div class="top-bar-left">
@@ -49,8 +49,11 @@
   </section>
 
   <section class="hero">
-    <h2>Elevate Every Moment</h2>
-    <p>Handpicked timepieces for every occasion</p>
+    <div class="hero-content">
+      <h1 class="hero-title">Timeless Elegance</h1>
+      <p class="hero-subtitle">Premium watches designed for those who value every second.</p>
+      <button class="hero-cta shine-btn" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">Shop Collection &rarr;</button>
+    </div>
   </section>
 
   <section class="filters">

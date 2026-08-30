@@ -71,6 +71,8 @@
         <input type="text" id="p-gallery" placeholder="More Images (comma-separated URLs, optional)">
         <p class="field-hint">Example: url1.jpg, url2.jpg, url3.jpg</p>
         <textarea id="p-description" placeholder="Description" rows="2"></textarea>
+        <textarea id="p-specs" placeholder="Specifications - one per line, format: Key: Value" rows="4"></textarea>
+        <p class="field-hint">Example:<br>Movement: Quartz<br>Case: Stainless Steel<br>Strap: Leather<br>Water Resistance: 30M</p>
         <div class="stock-check">
           <input type="checkbox" id="p-instock" checked>
           <label for="p-instock">In Stock</label>
@@ -140,6 +142,7 @@
     const imageEl = document.getElementById("p-image");
     const galleryEl = document.getElementById("p-gallery");
     const descEl = document.getElementById("p-description");
+    const specsEl = document.getElementById("p-specs");
     const inStockEl = document.getElementById("p-instock");
     const cancelEditBtn = document.getElementById("cancelEditBtn");
 
@@ -192,6 +195,7 @@
       imageEl.value = p.image;
       galleryEl.value = (p.gallery || []).join(", ");
       descEl.value = p.description;
+      specsEl.value = Object.entries(p.specifications || {}).map(([k, v]) => `${k}: ${v}`).join("\n");
       inStockEl.checked = p.inStock !== false;
       cancelEditBtn.style.display = "inline-block";
       window.scrollTo(0, 0);
@@ -208,6 +212,7 @@
       imageEl.value = "";
       galleryEl.value = "";
       descEl.value = "";
+      specsEl.value = "";
       inStockEl.checked = true;
       cancelEditBtn.style.display = "none";
     }
@@ -233,6 +238,16 @@
         .map(s => s.trim())
         .filter(s => s.length > 0);
 
+      const specifications = {};
+      specsEl.value.split("\n").forEach(line => {
+        const idx = line.indexOf(":");
+        if (idx > -1) {
+          const key = line.slice(0, idx).trim();
+          const value = line.slice(idx + 1).trim();
+          if (key) specifications[key] = value;
+        }
+      });
+
       const product = {
         id: id,
         name: nameEl.value,
@@ -241,6 +256,7 @@
         image: imageEl.value,
         gallery: gallery,
         description: descEl.value,
+        specifications: specifications,
         inStock: inStockEl.checked
       };
 

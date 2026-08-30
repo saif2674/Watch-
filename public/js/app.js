@@ -1,12 +1,12 @@
 import { db, auth } from "./firebase-config.js";
 import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 import { toggleWishlist, isInWishlist } from "./wishlist-utils.js";
+import { starsHtml } from "./reviews.js";
 
 let products = [];
 let cart = [];
 let currentCategory = "All";
 let currentSearch = "";
-
 const container = document.getElementById("products");
 const cartCountEl = document.getElementById("cart-count");
 const cartPanel = document.getElementById("cart-panel");
@@ -71,7 +71,9 @@ async function renderProducts() {
   for (const p of filtered) {
     const inStock = p.inStock !== false;
     const isFav = auth.currentUser ? await isInWishlist(p.id) : false;
-
+    const ratingHtml = p.reviewCount
+      ? `${starsHtml(p.avgRating)} <span class="rating-num">${p.avgRating} (${p.reviewCount})</span>`
+      : `<span class="no-reviews">No reviews yet</span>`;
     const card = document.createElement("div");
     card.className = "card";
     card.innerHTML = `
@@ -82,6 +84,7 @@ async function renderProducts() {
       </div>
       <div class="card-body">
         <h3 onclick="location.href='product.html?id=${p.id}'" style="cursor:pointer">${p.name}</h3>
+        <div class="rating-line">${ratingHtml}</div>
         <p>${p.description}</p>
         <p class="price">Rs ${p.price}</p>
         <button onclick="addToCart(${p.id})" ${inStock ? "" : "disabled"}>${inStock ? "Add to Cart" : "Out of Stock"}</button>
@@ -100,10 +103,9 @@ async function renderProducts() {
       const id = Number(btn.dataset.id);
       const product = products.find(p => p.id === id);
       const nowFav = await toggleWishlist(product);
-      btn.textContent = nowFav ? "❤" : "🤍";
+      btn.textContent = nowFav ? "❤" : " 🤍";
     });
   });
-
   observeCards();
 }
 
