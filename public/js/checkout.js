@@ -1,6 +1,3 @@
-import { db } from "./firebase-config.js";
-import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
-
 const WHATSAPP_NUMBER = "923267484989";
 
 const checkoutItemsEl = document.getElementById("checkout-items");
@@ -48,45 +45,46 @@ whatsappBtn.addEventListener("click", async () => {
     return;
   }
 
-  const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-
   whatsappBtn.disabled = true;
   whatsappBtn.textContent = "Placing order...";
 
-  let orderSaved = false;
+  let result = null;
 
   try {
-    await addDoc(collection(db, "orders"), {
-      customerName: name,
-      customerPhone: phone,
-      customerAddress: address,
-      items: cart.map(item => ({
-        id: item.id,
-        name: item.name,
-        price: item.price,
-        qty: item.qty
-      })),
-      total: total,
-      status: "New",
-      createdAt: serverTimestamp()
+    const response = await fetch("/api/create-order", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        items: cart.map(item => ({ id: item.id, qty: item.qty })),
+        customerName: name,
+        customerPhone: phone,
+        customerAddress: address
+      })
     });
-    orderSaved = true;
-  } catch (err) {
-    console.error("Order save failed:", err);
-  }
 
-  if (!orderSaved) {
-    alert("Sorry, we couldn't save your order right now. Please check your internet connection and try again.");
+    const data = await response.json();
+
+    if (!response.ok) {
+      alert(data.error || "Order failed. Please try again.");
+      whatsappBtn.disabled = false;
+      whatsappBtn.textContent = "Order via WhatsApp";
+      return;
+    }
+
+    result = data;
+  } catch (err) {
+    console.error("Order request failed:", err);
+    alert("Sorry, we couldn't place your order right now. Please check your internet connection and try again.");
     whatsappBtn.disabled = false;
     whatsappBtn.textContent = "Order via WhatsApp";
     return;
   }
 
   let message = `Hello WatchHub! I'd like to place an order:\n\n`;
-  cart.forEach(item => {
+  result.items.forEach(item => {
     message += `${item.name} x${item.qty} - Rs ${item.price * item.qty}\n`;
   });
-  message += `\nTotal: Rs ${total}\n\n`;
+  message += `\nTotal: Rs ${result.total}\n\n`;
   message += `Name: ${name}\nPhone: ${phone}\nAddress: ${address}`;
 
   const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
