@@ -24,6 +24,14 @@ function renderDetailLoader() {
   `;
 }
 
+function changeMainImage(url) {
+  const mainImg = document.getElementById("main-product-img");
+  if (mainImg) mainImg.src = url;
+  document.querySelectorAll(".thumb-img").forEach(t => t.classList.remove("active-thumb"));
+  const clicked = document.querySelector(`.thumb-img[data-url="${url}"]`);
+  if (clicked) clicked.classList.add("active-thumb");
+}
+
 async function renderProductDetail() {
   const id = getProductIdFromURL();
   renderDetailLoader();
@@ -38,12 +46,23 @@ async function renderProductDetail() {
   currentProduct = snap.data();
   const inStock = currentProduct.inStock !== false;
 
+  const allImages = [currentProduct.image, ...(currentProduct.gallery || [])].filter(Boolean);
+
+  const thumbsHtml = allImages.length > 1
+    ? `<div class="thumb-row">
+        ${allImages.map((url, i) => `
+          <img src="${url}" class="thumb-img ${i === 0 ? 'active-thumb' : ''}" data-url="${url}" onclick="changeMainImage('${url}')">
+        `).join("")}
+      </div>`
+    : "";
+
   detailContainer.innerHTML = `
     <div class="detail-card">
       <div style="position:relative;">
-        <img src="${currentProduct.image}" alt="${currentProduct.name}" style="${inStock ? "" : "opacity:0.5;"}">
+        <img id="main-product-img" src="${currentProduct.image}" alt="${currentProduct.name}" style="${inStock ? "" : "opacity:0.5;"}">
         ${inStock ? "" : '<span class="stock-badge">Out of Stock</span>'}
       </div>
+      ${thumbsHtml}
       <div class="detail-info">
         <h2>${currentProduct.name}</h2>
         <p>${currentProduct.description}</p>
@@ -151,6 +170,7 @@ window.increaseQty = increaseQty;
 window.decreaseQty = decreaseQty;
 window.removeFromCart = removeFromCart;
 window.toggleCart = toggleCart;
+window.changeMainImage = changeMainImage;
 
 loadCart();
 renderProductDetail();

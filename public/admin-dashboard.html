@@ -14,6 +14,7 @@
   .product-form button { padding:10px 16px; border:none; border-radius:8px; background:#d4af86; color:#fff; font-weight:600; }
   .stock-check { display:flex; align-items:center; gap:8px; margin-bottom:12px; }
   .stock-check input { width:auto; margin:0; }
+  .field-hint { font-size:12px; color:#999; margin:-6px 0 10px; }
   .admin-product-row { display:flex; justify-content:space-between; align-items:center; background:#fff; padding:10px; border-radius:10px; margin-bottom:8px; box-shadow:0 2px 6px rgba(0,0,0,0.06); }
   .admin-product-row img { width:45px; height:45px; object-fit:cover; border-radius:6px; margin-right:10px; }
   .row-info { display:flex; align-items:center; flex:1; }
@@ -37,7 +38,9 @@
       <input type="number" id="p-price" placeholder="Price">
       <input type="text" id="p-category" list="category-list" placeholder="Category (existing or new)">
       <datalist id="category-list"></datalist>
-      <input type="text" id="p-image" placeholder="Image URL">
+      <input type="text" id="p-image" placeholder="Main Image URL">
+      <input type="text" id="p-gallery" placeholder="More Images (comma-separated URLs, optional)">
+      <p class="field-hint">Example: url1.jpg, url2.jpg, url3.jpg</p>
       <textarea id="p-description" placeholder="Description" rows="2"></textarea>
       <div class="stock-check">
         <input type="checkbox" id="p-instock" checked>
@@ -77,6 +80,7 @@
     const categoryEl = document.getElementById("p-category");
     const categoryListEl = document.getElementById("category-list");
     const imageEl = document.getElementById("p-image");
+    const galleryEl = document.getElementById("p-gallery");
     const descEl = document.getElementById("p-description");
     const inStockEl = document.getElementById("p-instock");
     const cancelEditBtn = document.getElementById("cancelEditBtn");
@@ -128,6 +132,7 @@
       priceEl.value = p.price;
       categoryEl.value = p.category;
       imageEl.value = p.image;
+      galleryEl.value = (p.gallery || []).join(", ");
       descEl.value = p.description;
       inStockEl.checked = p.inStock !== false;
       cancelEditBtn.style.display = "inline-block";
@@ -143,6 +148,7 @@
       priceEl.value = "";
       categoryEl.value = "";
       imageEl.value = "";
+      galleryEl.value = "";
       descEl.value = "";
       inStockEl.checked = true;
       cancelEditBtn.style.display = "none";
@@ -164,12 +170,18 @@
         id = parseInt(id);
       }
 
+      const gallery = galleryEl.value
+        .split(",")
+        .map(s => s.trim())
+        .filter(s => s.length > 0);
+
       const product = {
         id: id,
         name: nameEl.value,
         price: parseFloat(priceEl.value),
         category: categoryEl.value.trim(),
         image: imageEl.value,
+        gallery: gallery,
         description: descEl.value,
         inStock: inStockEl.checked
       };
