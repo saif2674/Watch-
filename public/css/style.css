@@ -562,3 +562,84 @@ button:active { transform: scale(0.96); }
     filter: drop-shadow(0 0 14px rgba(212,175,86,0.8)) drop-shadow(0 0 28px rgba(212,175,86,0.5));
   }
 }
+
+/* Account button + dropdown */
+.account-btn { background:#333; color:#fff; border:none; padding:8px 14px; border-radius:8px; margin-left:8px; cursor:pointer; font-weight:600; }
+.account-dropdown { position:absolute; top:110%; right:0; background:#fff; border-radius:10px; box-shadow:0 4px 16px rgba(0,0,0,0.15); overflow:hidden; min-width:150px; z-index:50; }
+.account-dropdown a, .account-dropdown button { display:block; width:100%; text-align:left; padding:10px 14px; background:none; border:none; font-size:14px; color:#333; text-decoration:none; box-sizing:border-box; cursor:pointer; }
+.account-dropdown a:hover, .account-dropdown button:hover { background:#faf6ef; }
+
+/* Top bar - login/account (top-left) */
+.top-bar { width:100%; background:#141414; padding:8px 16px; display:flex; align-items:center; justify-content:flex-start; box-sizing:border-box; }
+.top-bar .account-btn { background:transparent; color:#d4af86; border:1px solid #d4af86; padding:6px 16px; border-radius:20px; font-size:13px; font-weight:600; margin-left:0; cursor:pointer; transition:all 0.25s ease; }
+.top-bar .account-btn:hover { background:#d4af86; color:#141414; }
+
+/* Login/Signup variant buttons */
+.account-btn.login-variant { background:transparent; color:#d4af86; border:1px solid #d4af86; }
+.account-btn.signup-variant { background:linear-gradient(135deg,#d4af86,#b98f5e); color:#141414; border:1px solid transparent; margin-left:8px; }
+
+/* White shine sweep animation */
+.shine-btn { position:relative; overflow:hidden; }
+.shine-btn::after {
+  content:"";
+  position:absolute;
+  top:0;
+  left:-75%;
+  width:50%;
+  height:100%;
+  background: linear-gradient(120deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.75) 50%, rgba(255,255,255,0) 100%);
+  transform: skewX(-20deg);
+  animation: shineSweep 2.6s ease-in-out infinite;
+}
+@keyframes shineSweep {
+  0% { left: -75%; }
+  45% { left: 125%; }
+  100% { left: 125%; }
+}
+
+/* Top bar layout override - logout icon on right */
+.top-bar { justify-content: space-between; }
+.top-bar-left { display:flex; align-items:center; }
+
+/* Logout icon button */
+.logout-icon-btn {
+  display:none;
+  align-items:center;
+  justify-content:center;
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  border:1px solid rgba(212,175,86,0.5);
+  background:transparent;
+  color:#d4af86;
+  cursor:pointer;
+  transition:all 0.25s ease;
+}
+.logout-icon-btn:hover { background:#d4af86; color:#141414; }
+.logout-icon-btn svg { width:18px; height:18px; }
+
+/* Favorite button with heartbeat animation */
+.favorite-btn {
+  display:none;
+  align-items:center;
+  gap:6px;
+  background:#fff;
+  border:none;
+  padding:8px 14px;
+  border-radius:20px;
+  font-weight:600;
+  color:#c0392b;
+  cursor:pointer;
+  box-shadow:0 2px 6px rgba(0,0,0,0.15);
+}
+.favorite-btn .heart-icon {
+  display:inline-block;
+  animation: heartbeat 1.8s ease-in-out infinite;
+}
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  15% { transform: scale(1.3); }
+  30% { transform: scale(1); }
+  45% { transform: scale(1.2); }
+  60% { transform: scale(1); }
+}

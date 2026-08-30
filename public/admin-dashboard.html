@@ -9,6 +9,11 @@
   .admin-wrap { max-width: 700px; margin: 20px auto; padding: 0 15px; }
   .admin-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
   .logout-btn { background:#333; color:#fff; border:none; padding:8px 14px; border-radius:8px; }
+  .admin-tabs { display:flex; gap:8px; margin-bottom:20px; }
+  .admin-tab-btn { flex:1; padding:10px; border:none; border-radius:8px; background:#eee; font-weight:600; color:#555; }
+  .admin-tab-btn.active { background:#d4af86; color:#fff; }
+  .admin-section { display:none; }
+  .admin-section.active { display:block; }
   .product-form { background:#fff; padding:15px; border-radius:12px; box-shadow:0 3px 12px rgba(0,0,0,0.08); margin-bottom:20px; }
   .product-form input, .product-form select, .product-form textarea { width:100%; padding:8px; margin-bottom:10px; border:1px solid #ccc; border-radius:8px; box-sizing:border-box; }
   .product-form button { padding:10px 16px; border:none; border-radius:8px; background:#d4af86; color:#fff; font-weight:600; }
@@ -22,6 +27,23 @@
   .edit-btn { background:#eee; }
   .delete-btn { background:#e77; color:#fff; }
   .out-of-stock-tag { color:#c0392b; font-weight:600; font-size:13px; }
+
+  .order-card { background:#fff; padding:14px; border-radius:12px; margin-bottom:12px; box-shadow:0 2px 8px rgba(0,0,0,0.07); }
+  .order-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px; }
+  .order-customer { font-weight:700; }
+  .order-date { font-size:12px; color:#999; }
+  .order-line { font-size:14px; color:#444; margin:2px 0; }
+  .order-items { margin:8px 0; padding:8px; background:#faf6ef; border-radius:8px; font-size:14px; }
+  .order-item-row { display:flex; justify-content:space-between; }
+  .order-total { font-weight:700; margin-top:6px; text-align:right; }
+  .order-bottom { display:flex; justify-content:space-between; align-items:center; margin-top:10px; gap:8px; }
+  .status-select { flex:1; padding:8px; border-radius:8px; border:1px solid #ccc; }
+  .status-New { color:#c0392b; }
+  .status-Confirmed { color:#2980b9; }
+  .status-Delivered { color:#27ae60; }
+  .status-Cancelled { color:#888; }
+  .order-delete-btn { background:#e77; color:#fff; border:none; padding:8px 12px; border-radius:8px; }
+  .empty-msg { text-align:center; color:#999; padding:30px 0; }
 </style>
 </head>
 <body>
@@ -31,33 +53,47 @@
       <button class="logout-btn" id="logoutBtn">Logout</button>
     </div>
 
-    <div class="product-form">
-      <h3 id="form-title">Add New Product</h3>
-      <input type="hidden" id="edit-id">
-      <input type="text" id="p-name" placeholder="Name">
-      <input type="number" id="p-price" placeholder="Price">
-      <input type="text" id="p-category" list="category-list" placeholder="Category (existing or new)">
-      <datalist id="category-list"></datalist>
-      <input type="text" id="p-image" placeholder="Main Image URL">
-      <input type="text" id="p-gallery" placeholder="More Images (comma-separated URLs, optional)">
-      <p class="field-hint">Example: url1.jpg, url2.jpg, url3.jpg</p>
-      <textarea id="p-description" placeholder="Description" rows="2"></textarea>
-      <div class="stock-check">
-        <input type="checkbox" id="p-instock" checked>
-        <label for="p-instock">In Stock</label>
-      </div>
-      <button id="saveBtn">Save Product</button>
-      <button id="cancelEditBtn" style="display:none; background:#999; margin-left:8px;">Cancel Edit</button>
+    <div class="admin-tabs">
+      <button class="admin-tab-btn active" id="tab-products-btn">Products</button>
+      <button class="admin-tab-btn" id="tab-orders-btn">Orders</button>
     </div>
 
-    <h3>Existing Products</h3>
-    <div id="admin-products-list"></div>
+    <!-- PRODUCTS SECTION -->
+    <div class="admin-section active" id="section-products">
+      <div class="product-form">
+        <h3 id="form-title">Add New Product</h3>
+        <input type="hidden" id="edit-id">
+        <input type="text" id="p-name" placeholder="Name">
+        <input type="number" id="p-price" placeholder="Price">
+        <input type="text" id="p-category" list="category-list" placeholder="Category (existing or new)">
+        <datalist id="category-list"></datalist>
+        <input type="text" id="p-image" placeholder="Main Image URL">
+        <input type="text" id="p-gallery" placeholder="More Images (comma-separated URLs, optional)">
+        <p class="field-hint">Example: url1.jpg, url2.jpg, url3.jpg</p>
+        <textarea id="p-description" placeholder="Description" rows="2"></textarea>
+        <div class="stock-check">
+          <input type="checkbox" id="p-instock" checked>
+          <label for="p-instock">In Stock</label>
+        </div>
+        <button id="saveBtn">Save Product</button>
+        <button id="cancelEditBtn" style="display:none; background:#999; margin-left:8px;">Cancel Edit</button>
+      </div>
+
+      <h3>Existing Products</h3>
+      <div id="admin-products-list"></div>
+    </div>
+
+    <!-- ORDERS SECTION -->
+    <div class="admin-section" id="section-orders">
+      <h3>Customer Orders</h3>
+      <div id="admin-orders-list"></div>
+    </div>
   </div>
 
   <script type="module">
     import { auth, db } from "./js/firebase-config.js";
     import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
-    import { collection, getDocs, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+    import { collection, getDocs, doc, setDoc, deleteDoc, updateDoc, orderBy, query } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 
     onAuthStateChanged(auth, (user) => {
       if (!user) {
@@ -72,6 +108,28 @@
       window.location.href = "admin-login.html";
     });
 
+    // ---- TAB SWITCHING ----
+    const tabProductsBtn = document.getElementById("tab-products-btn");
+    const tabOrdersBtn = document.getElementById("tab-orders-btn");
+    const sectionProducts = document.getElementById("section-products");
+    const sectionOrders = document.getElementById("section-orders");
+
+    tabProductsBtn.addEventListener("click", () => {
+      tabProductsBtn.classList.add("active");
+      tabOrdersBtn.classList.remove("active");
+      sectionProducts.classList.add("active");
+      sectionOrders.classList.remove("active");
+    });
+
+    tabOrdersBtn.addEventListener("click", () => {
+      tabOrdersBtn.classList.add("active");
+      tabProductsBtn.classList.remove("active");
+      sectionOrders.classList.add("active");
+      sectionProducts.classList.remove("active");
+      loadOrders();
+    });
+
+    // ---- PRODUCTS ----
     const listEl = document.getElementById("admin-products-list");
     const formTitle = document.getElementById("form-title");
     const editIdEl = document.getElementById("edit-id");
@@ -195,6 +253,84 @@
       if (!confirm("Delete this product?")) return;
       await deleteDoc(doc(db, "products", String(id)));
       loadProducts();
+    }
+
+    // ---- ORDERS ----
+    const ordersListEl = document.getElementById("admin-orders-list");
+    const STATUS_OPTIONS = ["New", "Confirmed", "Delivered", "Cancelled"];
+
+    async function loadOrders() {
+      ordersListEl.innerHTML = "Loading...";
+      let snapshot;
+      try {
+        const q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
+        snapshot = await getDocs(q);
+      } catch (err) {
+        snapshot = await getDocs(collection(db, "orders"));
+      }
+
+      const orders = snapshot.docs.map(d => ({ docId: d.id, ...d.data() }));
+      ordersListEl.innerHTML = "";
+
+      if (orders.length === 0) {
+        ordersListEl.innerHTML = "<p class='empty-msg'>No orders yet.</p>";
+        return;
+      }
+
+      orders.forEach(o => {
+        const card = document.createElement("div");
+        card.className = "order-card";
+
+        const dateStr = o.createdAt && o.createdAt.toDate
+          ? o.createdAt.toDate().toLocaleString()
+          : "";
+
+        const itemsHtml = (o.items || []).map(it => `
+          <div class="order-item-row">
+            <span>${it.name} x${it.qty}</span>
+            <span>Rs ${it.price * it.qty}</span>
+          </div>
+        `).join("");
+
+        const statusOptionsHtml = STATUS_OPTIONS.map(s =>
+          `<option value="${s}" ${o.status === s ? "selected" : ""}>${s}</option>`
+        ).join("");
+
+        card.innerHTML = `
+          <div class="order-top">
+            <div>
+              <div class="order-customer">${o.customerName || "-"}</div>
+              <div class="order-line">${o.customerPhone || "-"}</div>
+              <div class="order-line">${o.customerAddress || "-"}</div>
+            </div>
+            <div class="order-date">${dateStr}</div>
+          </div>
+          <div class="order-items">
+            ${itemsHtml}
+            <div class="order-total">Total: Rs ${o.total}</div>
+          </div>
+          <div class="order-bottom">
+            <select class="status-select status-${o.status}">
+              ${statusOptionsHtml}
+            </select>
+            <button class="order-delete-btn">Delete</button>
+          </div>
+        `;
+
+        const statusSelect = card.querySelector(".status-select");
+        statusSelect.addEventListener("change", async () => {
+          await updateDoc(doc(db, "orders", o.docId), { status: statusSelect.value });
+          statusSelect.className = "status-select status-" + statusSelect.value;
+        });
+
+        card.querySelector(".order-delete-btn").addEventListener("click", async () => {
+          if (!confirm("Delete this order?")) return;
+          await deleteDoc(doc(db, "orders", o.docId));
+          loadOrders();
+        });
+
+        ordersListEl.appendChild(card);
+      });
     }
   </script>
 </body>

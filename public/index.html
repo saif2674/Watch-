@@ -13,8 +13,21 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+  <div class="top-bar">
+    <div class="top-bar-left">
+      <button id="login-btn" class="account-btn login-variant shine-btn" onclick="location.href='account.html?tab=login'">Login</button>
+      <button id="signup-btn" class="account-btn signup-variant shine-btn" onclick="location.href='account.html?tab=signup'">Signup</button>
+      <button id="account-btn" class="account-btn" style="display:none;"></button>
+    </div>
+    <button id="logout-icon-btn" class="logout-icon-btn" style="display:none;" title="Logout">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/></svg>
+    </button>
+  </div>
   <header>
     <img src="https://i.ibb.co/FT8KrZq/file-00000000039c82088e38b3467c1dfeb3.png" alt="WatchHub" class="site-logo" onclick="location.href='index.html'">
+        <button id="favorite-btn" class="favorite-btn" style="display:none;">
+      <span class="heart-icon">❤</span> Favorite
+    </button>
     <button id="cart-btn" onclick="toggleCart()">
       Cart (<span id="cart-count">0</span>)
     </button>
@@ -54,5 +67,6 @@
 
   
   <script type="module" src="js/app.js"></script>
+  <script type="module" src="js/header-auth.js"></script>
 </body>
 </html>
