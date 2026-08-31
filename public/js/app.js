@@ -7,6 +7,7 @@ let products = [];
 let cart = [];
 let currentCategory = "All";
 let currentSearch = "";
+let currentSort = "featured";
 const container = document.getElementById("products");
 const cartCountEl = document.getElementById("cart-count");
 const cartPanel = document.getElementById("cart-panel");
@@ -14,6 +15,7 @@ const cartItemsEl = document.getElementById("cart-items");
 const cartTotalEl = document.getElementById("cart-total");
 const searchBox = document.getElementById("search-box");
 const filterButtons = document.getElementById("filter-buttons");
+const sortSelect = document.getElementById("sort-select");
 
 function renderSkeletons(count = 6) {
   container.innerHTML = "";
@@ -57,11 +59,19 @@ function renderCategoryFilters() {
 async function renderProducts() {
   container.innerHTML = "";
 
-  const filtered = products.filter(p => {
+  let filtered = products.filter(p => {
     const matchesCategory = currentCategory === "All" || p.category === currentCategory;
     const matchesSearch = p.name.toLowerCase().includes(currentSearch.toLowerCase());
     return matchesCategory && matchesSearch;
   });
+
+  if (currentSort === "price-low") {
+    filtered = filtered.slice().sort((a, b) => a.price - b.price);
+  } else if (currentSort === "price-high") {
+    filtered = filtered.slice().sort((a, b) => b.price - a.price);
+  } else if (currentSort === "rating") {
+    filtered = filtered.slice().sort((a, b) => (b.avgRating || 0) - (a.avgRating || 0));
+  }
 
   if (filtered.length === 0) {
     container.innerHTML = "<p style='padding:20px;text-align:center;grid-column:1/-1;'>No watches found.</p>";
@@ -88,7 +98,10 @@ async function renderProducts() {
         <p>${p.description}</p>
         <p class="price">Rs ${p.price}</p>
         <button onclick="addToCart(${p.id})" ${inStock ? "" : "disabled"}>${inStock ? "Add to Cart" : "Out of Stock"}</button>
-        <button class="view-more-btn" onclick="location.href='product.html?id=${p.id}'">View More</button>
+        <button class="view-details-btn" onclick="location.href='product.html?id=${p.id}'">
+          <span>View Details</span>
+          <span class="vd-arrow">&rarr;</span>
+        </button>
       </div>
     `;
     container.appendChild(card);
@@ -137,6 +150,13 @@ filterButtons.addEventListener("click", (e) => {
     renderProducts();
   }
 });
+
+if (sortSelect) {
+  sortSelect.addEventListener("change", (e) => {
+    currentSort = e.target.value;
+    renderProducts();
+  });
+}
 
 function addToCart(id) {
   const product = products.find(p => p.id === id);
