@@ -1144,3 +1144,73 @@ button:active { transform: scale(0.96); }
 .remove-wishlist-btn:active { transform:scale(1.2); }
 .wishlist-card-removing { animation: wishlist-fade-out 0.3s ease forwards; }
 @keyframes wishlist-fade-out { to { opacity:0; transform:scale(0.9); } }
+
+/* Category filter icons */
+.cat-icon { margin-right:4px; }
+
+/* Dark mode toggle button */
+.theme-toggle-btn {
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  width:48px;
+  height:48px;
+  border-radius:50%;
+  border:none;
+  background:#1a1a1a;
+  color:#fff;
+  font-size:20px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.3);
+  cursor:pointer;
+  z-index:999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition: transform 0.25s ease;
+}
+.theme-toggle-btn:active { transform:scale(0.9) rotate(20deg); }
+
+/* Dark mode overrides */
+html.dark-mode body { background:#121212; color:#eee; }
+html.dark-mode header { background:#000; }
+html.dark-mode .welcome-note h2, html.dark-mode .welcome-note p { color:#eee; }
+html.dark-mode .card { background:#1e1e1e; color:#eee; box-shadow:0 2px 10px rgba(0,0,0,0.5); }
+html.dark-mode .card-body h3 { color:#fff; }
+html.dark-mode .card-body p { color:#bbb; }
+html.dark-mode .filter-btn { background:#2a2a2a; color:#ccc; }
+html.dark-mode .filter-btn.active { background:#d4af86; color:#141414; }
+html.dark-mode #search-box, html.dark-mode #sort-select { background:#1e1e1e; color:#eee; border-color:#444; }
+html.dark-mode footer { background:#000; color:#999; }
+html.dark-mode .cart-panel { background:#1a1a1a; color:#eee; }
+html.dark-mode .checkout-page, html.dark-mode .wishlist-main, html.dark-mode .contact-page { color:#eee; }
+html.dark-mode .checkout-form input, html.dark-mode .checkout-form textarea,
+html.dark-mode .contact-form input, html.dark-mode .contact-form textarea { background:#1e1e1e; color:#eee; border-color:#444; }
+html.dark-mode .trust-badge, html.dark-mode .shipping-info, html.dark-mode .contact-info-card { background:#1e1e1e; color:#eee; }
+html.dark-mode .detail-card, html.dark-mode .detail-info h2, html.dark-mode .detail-info p { color:#eee; }
+html.dark-mode .review-item, html.dark-mode .review-form { background:#1e1e1e; color:#eee; }
+html.dark-mode .wishlist-title { color:#fff; }
+html.dark-mode .contact-info-card { color:#eee; }
+
+/* Dark mode fix - product detail page */
+html.dark-mode .detail-card { background:#1e1e1e; }
+html.dark-mode .detail-info h2 { color:#fff; }
+html.dark-mode .detail-info p { color:#ccc; }
+html.dark-mode .price { color:#d4af86; }
+html.dark-mode .specs-table th { color:#fff; border-bottom-color:#d4af86; }
+html.dark-mode .specs-table td { color:#ccc; border-bottom-color:#333; }
+html.dark-mode .specs-table td:first-child { color:#999; }
+html.dark-mode .rating-line { color:#d4af86; }
+html.dark-mode .rating-line .rating-num { color:#aaa; }
+html.dark-mode .view-details-btn { border-color:#d4af86; color:#d4af86; }
+html.dark-mode .reviews-heading { color:#fff; }
+html.dark-mode .review-name { color:#fff; }
+html.dark-mode .review-comment { color:#bbb; }
+html.dark-mode .no-reviews-text { color:#999; }
+html.dark-mode .review-form h4 { color:#fff; }
+html.dark-mode .review-form textarea { background:#111; color:#eee; border-color:#444; }
+html.dark-mode .login-to-review { color:#aaa; }
+
+/* Dark mode fix - welcome note section */
+html.dark-mode .welcome-note { background:#121212; }
+html.dark-mode .welcome-note h2 { color:#fff; }
+html.dark-mode .welcome-note p { color:#bbb; }

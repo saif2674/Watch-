@@ -44,7 +44,7 @@ async function render() {
     card.style.animationDelay = `${i * 0.08}s`;
     card.innerHTML = `
       <div style="position:relative;">
-        <img src="${p.image}" alt="${p.name}" onclick="location.href='product.html?id=${p.id}'" style="cursor:pointer;">
+        <img src="${p.image}" alt="${p.name}" loading="lazy" onclick="location.href='product.html?id=${p.id}'" style="cursor:pointer;">
         <button class="remove-wishlist-btn" data-id="${p.id}" title="Remove from wishlist">✕</button>
       </div>
       <div class="card-body">

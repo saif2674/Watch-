@@ -17,6 +17,22 @@ const searchBox = document.getElementById("search-box");
 const filterButtons = document.getElementById("filter-buttons");
 const sortSelect = document.getElementById("sort-select");
 
+const categoryIcons = {
+  "all": "⌚",
+  "luxury": "💎",
+  "chronograph": "🕰️",
+  "sport": "🏃",
+  "minimalist": "✨",
+  "men's": "🕴️",
+  "women's": "👩",
+  "classic": "🎩",
+  "new arrivals": "🎁"
+};
+
+function getCategoryIcon(cat) {
+  return categoryIcons[cat.toLowerCase()] || "⌚";
+}
+
 function renderSkeletons(count = 6) {
   container.innerHTML = "";
   for (let i = 0; i < count; i++) {
@@ -49,7 +65,7 @@ function renderCategoryFilters() {
     const btn = document.createElement("button");
     btn.className = "filter-btn";
     btn.dataset.category = cat;
-    btn.textContent = cat;
+    btn.innerHTML = `<span class="cat-icon">${getCategoryIcon(cat)}</span> ${cat}`;
     filterButtons.appendChild(btn);
   });
 }
@@ -96,7 +112,7 @@ async function renderProducts() {
     card.className = "card";
     card.innerHTML = `
       <div style="position:relative;">
-        <img src="${p.image}" alt="${p.name}" onclick="location.href='product.html?id=${p.id}'" style="cursor:pointer; ${inStock ? "" : "opacity:0.5;"}">
+        <img src="${p.image}" alt="${p.name}" loading="lazy" onclick="location.href='product.html?id=${p.id}'" style="cursor:pointer; ${inStock ? "" : "opacity:0.5;"}">
         ${inStock ? "" : '<span class="stock-badge">Out of Stock</span>'}
         <button class="wishlist-icon-btn" data-id="${p.id}" style="position:absolute;top:8px;right:8px;background:rgba(255,255,255,0.85);border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:16px;">${isFav ? "❤" : "🤍"}</button>
       </div>
@@ -151,10 +167,11 @@ searchBox.addEventListener("input", (e) => {
 });
 
 filterButtons.addEventListener("click", (e) => {
-  if (e.target.classList.contains("filter-btn")) {
-    document.querySelectorAll(".filter-btn").forEach(btn => btn.classList.remove("active"));
-    e.target.classList.add("active");
-    currentCategory = e.target.dataset.category;
+  const btn = e.target.closest(".filter-btn");
+  if (btn) {
+    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentCategory = btn.dataset.category;
     renderProducts();
   }
 });

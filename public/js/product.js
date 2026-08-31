@@ -52,7 +52,7 @@ async function renderProductDetail() {
   const thumbsHtml = allImages.length > 1
     ? `<div class="thumb-row">
         ${allImages.map((url, i) => `
-          <img src="${url}" class="thumb-img ${i === 0 ? 'active-thumb' : ''}" data-url="${url}" onclick="changeMainImage('${url}')">
+          <img src="${url}" class="thumb-img ${i === 0 ? 'active-thumb' : ''}" data-url="${url}" loading="lazy" onclick="changeMainImage('${url}')">
         `).join("")}
       </div>`
     : "";
