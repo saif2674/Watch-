@@ -4,9 +4,18 @@ import { getWishlistItems, removeFromWishlist } from "./wishlist-utils.js";
 
 const container = document.getElementById("wishlist-container");
 
-function hideLoader() {
-  const loader = document.getElementById("page-loader");
-  if (loader) loader.classList.add("loader-hidden");
+function renderSkeletons(count = 4) {
+  container.innerHTML = "";
+  for (let i = 0; i < count; i++) {
+    const sk = document.createElement("div");
+    sk.className = "skeleton-card";
+    sk.innerHTML = `
+      <div class="skeleton-img"></div>
+      <div class="skeleton-line"></div>
+      <div class="skeleton-line short"></div>
+    `;
+    container.appendChild(sk);
+  }
 }
 
 function showEmptyState(message, showLoginLink = false) {
@@ -20,8 +29,8 @@ function showEmptyState(message, showLoginLink = false) {
 }
 
 async function render() {
+  renderSkeletons();
   const items = await getWishlistItems();
-  hideLoader();
 
   if (items.length === 0) {
     showEmptyState("Your wishlist is empty. Start adding watches you love.");
@@ -58,7 +67,6 @@ async function render() {
 }
 
 onAuthStateChanged(auth, (user) => {
-  hideLoader();
   if (!user) {
     showEmptyState("Please login to view your saved favorites.", true);
     return;
