@@ -1,6 +1,6 @@
 import { db, auth } from "./firebase-config.js";
 import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
-import { toggleWishlist, isInWishlist } from "./wishlist-utils.js";
+import { toggleWishlist, getWishlistItems } from "./wishlist-utils.js";
 import { starsHtml } from "./reviews.js";
 
 let products = [];
@@ -37,8 +37,6 @@ async function fetchProducts() {
   const snapshot = await getDocs(collection(db, "products"));
   products = snapshot.docs.map(doc => doc.data());
   renderCategoryFilters();
-  const loader = document.getElementById("page-loader");
-  if (loader) loader.classList.add("loader-hidden");
   renderProducts();
 }
 
@@ -57,8 +55,6 @@ function renderCategoryFilters() {
 }
 
 async function renderProducts() {
-  container.innerHTML = "";
-
   let filtered = products.filter(p => {
     const matchesCategory = currentCategory === "All" || p.category === currentCategory;
     const matchesSearch = p.name.toLowerCase().includes(currentSearch.toLowerCase());
@@ -78,9 +74,21 @@ async function renderProducts() {
     return;
   }
 
-  for (const p of filtered) {
+  let favIds = new Set();
+  if (auth.currentUser) {
+    try {
+      const items = await getWishlistItems();
+      favIds = new Set(items.map(i => i.id));
+    } catch (e) {
+      favIds = new Set();
+    }
+  }
+
+  container.innerHTML = "";
+
+  filtered.forEach(p => {
     const inStock = p.inStock !== false;
-    const isFav = auth.currentUser ? await isInWishlist(p.id) : false;
+    const isFav = favIds.has(p.id);
     const ratingHtml = p.reviewCount
       ? `${starsHtml(p.avgRating)} <span class="rating-num">${p.avgRating} (${p.reviewCount})</span>`
       : `<span class="no-reviews">No reviews yet</span>`;
@@ -105,7 +113,7 @@ async function renderProducts() {
       </div>
     `;
     container.appendChild(card);
-  }
+  });
 
   document.querySelectorAll(".wishlist-icon-btn").forEach(btn => {
     btn.addEventListener("click", async (e) => {
