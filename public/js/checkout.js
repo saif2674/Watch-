@@ -1,5 +1,6 @@
-import { db } from "./firebase-config.js";
-import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+import { db, auth } from "./firebase-config.js";
+import { collection, addDoc, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
 import { showToast } from "./toast.js";
 
 const WHATSAPP_NUMBER = "923267484989";
@@ -9,6 +10,7 @@ const checkoutItemsEl = document.getElementById("checkout-items");
 const checkoutSubtotalEl = document.getElementById("checkout-subtotal");
 const checkoutTotalEl = document.getElementById("checkout-total");
 const whatsappBtn = document.getElementById("whatsapp-order-btn");
+const savedAddressSelect = document.getElementById("saved-address-select");
 
 let cart = JSON.parse(localStorage.getItem("watchCart")) || [];
 
@@ -38,6 +40,31 @@ function renderCheckout() {
   checkoutTotalEl.textContent = subtotal + DELIVERY_CHARGE;
 }
 
+async function loadSavedAddresses(user) {
+  if (!savedAddressSelect || !user) return;
+
+  const snapshot = await getDocs(collection(db, "users", user.uid, "addresses"));
+  const addresses = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+
+  if (addresses.length === 0) return;
+
+  savedAddressSelect.style.display = "block";
+  savedAddressSelect.innerHTML = `<option value="">-- Use a saved address --</option>` +
+    addresses.map(a => `<option value="${a.id}">${a.label}</option>`).join("");
+
+  savedAddressSelect.addEventListener("change", () => {
+    const selected = addresses.find(a => a.id === savedAddressSelect.value);
+    if (selected) {
+      document.getElementById("cust-phone").value = selected.phone;
+      document.getElementById("cust-address").value = selected.address;
+    }
+  });
+}
+
+onAuthStateChanged(auth, (user) => {
+  loadSavedAddresses(user);
+});
+
 whatsappBtn.addEventListener("click", async () => {
   const name = document.getElementById("cust-name").value.trim();
   const phone = document.getElementById("cust-phone").value.trim();
@@ -60,7 +87,7 @@ whatsappBtn.addEventListener("click", async () => {
   whatsappBtn.textContent = "Placing order...";
 
   try {
-    await addDoc(collection(db, "orders"), {
+    const orderData = {
       customerName: name,
       customerPhone: phone,
       customerAddress: address,
@@ -75,7 +102,13 @@ whatsappBtn.addEventListener("click", async () => {
       total: total,
       status: "New",
       createdAt: serverTimestamp()
-    });
+    };
+
+    if (auth.currentUser) {
+      orderData.userId = auth.currentUser.uid;
+    }
+
+    await addDoc(collection(db, "orders"), orderData);
   } catch (err) {
     console.error("Order save failed:", err);
   }

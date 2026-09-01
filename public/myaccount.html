@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Account - WatchHub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .myaccount-wrap { max-width:600px; margin:20px auto; padding:0 15px; }
+  .myaccount-header { text-align:center; margin-bottom:20px; }
+  .myaccount-header h2 { font-family:'Playfair Display', serif; }
+  .myaccount-tabs { display:flex; gap:8px; margin-bottom:20px; }
+  .myaccount-tab-btn { flex:1; padding:10px; border:none; border-radius:20px; background:#eee; font-weight:600; color:#555; cursor:pointer; }
+  .myaccount-tab-btn.active { background:linear-gradient(135deg,#d4af86,#b98f5e); color:#141414; }
+  .myaccount-section { display:none; }
+  .myaccount-section.active { display:block; }
+  .info-card { background:#fff; padding:16px; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.06); margin-bottom:14px; }
+  .info-row { display:flex; justify-content:space-between; padding:6px 0; font-size:14px; }
+  .info-row span:first-child { color:#888; }
+  .password-form h4, .address-form h4 { margin-top:0; }
+  .password-form input, .address-form input, .address-form textarea {
+    width:100%; padding:10px; margin-bottom:10px; border:1px solid #ccc; border-radius:8px; box-sizing:border-box;
+  }
+  .password-form button, .address-form button {
+    padding:10px 16px; border:none; border-radius:8px;
+    background:linear-gradient(135deg,#d4af86,#b98f5e); color:#141414; font-weight:700; cursor:pointer;
+  }
+  .order-mini-card { background:#fff; padding:12px; border-radius:10px; margin-bottom:10px; box-shadow:0 2px 6px rgba(0,0,0,0.06); }
+  .order-mini-top { display:flex; justify-content:space-between; font-size:13px; color:#888; margin-bottom:6px; }
+  .order-mini-status { font-weight:700; color:#d4af86; }
+  .address-card { background:#fff; padding:12px; border-radius:10px; margin-bottom:10px; box-shadow:0 2px 6px rgba(0,0,0,0.06); display:flex; justify-content:space-between; align-items:center; gap:10px; }
+  .empty-msg { text-align:center; color:#999; padding:30px 0; }
+</style>
+</head>
+<body>
+  <header>
+    <img src="https://i.ibb.co/FT8KrZq/file-00000000039c82088e38b3467c1dfeb3.png" alt="WatchHub" class="site-logo" onclick="location.href='index.html'">
+  </header>
+  <a href="index.html" class="back-to-shop-link">&larr; Back to Home</a>
+
+  <div class="myaccount-wrap">
+    <div class="myaccount-header">
+      <h2>My Account</h2>
+    </div>
+
+    <div class="myaccount-tabs">
+      <button class="myaccount-tab-btn active" id="tab-profile-btn">Profile</button>
+      <button class="myaccount-tab-btn" id="tab-orders-btn">My Orders</button>
+      <button class="myaccount-tab-btn" id="tab-addresses-btn">Addresses</button>
+    </div>
+
+    <div class="myaccount-section active" id="section-profile">
+      <div class="info-card" id="profile-info"></div>
+      <div class="info-card password-form">
+        <h4>Change Password</h4>
+        <input type="password" id="old-password" placeholder="Current Password">
+        <input type="password" id="new-password" placeholder="New Password (min 6 characters)">
+        <input type="password" id="confirm-password" placeholder="Confirm New Password">
+        <button id="change-password-btn">Update Password</button>
+      </div>
+    </div>
+
+    <div class="myaccount-section" id="section-orders">
+      <div id="orders-list"></div>
+    </div>
+
+    <div class="myaccount-section" id="section-addresses">
+      <div id="addresses-list"></div>
+      <div class="info-card address-form">
+        <h4>Add New Address</h4>
+        <input type="text" id="addr-label" placeholder="Label (e.g. Home, Office)">
+        <input type="text" id="addr-phone" placeholder="Phone Number">
+        <textarea id="addr-text" placeholder="Full Address" rows="3"></textarea>
+        <button id="save-address-btn">Save Address</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2026 WatchHub. All rights reserved.</p>
+    <p>Crafted with precision, delivered with care.</p>
+  </footer>
+
+  <script type="module" src="js/myaccount.js"></script>
+</body>
+</html>

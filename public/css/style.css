@@ -1403,3 +1403,7 @@ html.dark-mode .grand-total { border-top-color:#333; }
 .cart-panel h2 {
   font-family: 'Playfair Display', serif;
 }
+
+/* Account button hamburger icon */
+.account-btn { display:inline-flex; align-items:center; gap:6px; }
+.account-menu-icon { font-size:14px; }

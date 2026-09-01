@@ -20,6 +20,12 @@ if (favoriteBtn) {
   });
 }
 
+if (accountBtn) {
+  accountBtn.addEventListener("click", () => {
+    window.location.href = "myaccount.html";
+  });
+}
+
 onAuthStateChanged(auth, (user) => {
   if (user) {
     if (loginBtn) loginBtn.style.display = "none";
@@ -28,8 +34,8 @@ onAuthStateChanged(auth, (user) => {
     if (favoriteBtn) favoriteBtn.style.display = "inline-flex";
 
     const label = user.displayName ? user.displayName.split(" ")[0] : "My Account";
-    accountBtn.style.display = "inline-block";
-    accountBtn.textContent = label;
+    accountBtn.style.display = "inline-flex";
+    accountBtn.innerHTML = `<span class="account-menu-icon">&#9776;</span> ${label}`;
   } else {
     if (loginBtn) loginBtn.style.display = "inline-block";
     if (signupBtn) signupBtn.style.display = "inline-block";
