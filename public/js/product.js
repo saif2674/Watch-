@@ -2,6 +2,7 @@ import { db, auth } from "./firebase-config.js";
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 import { toggleWishlist, isInWishlist } from "./wishlist-utils.js";
 import { getReviews, getMyReview, submitReview, starsHtml } from "./reviews.js";
+import { showToast } from "./toast.js";
 
 let cart = [];
 let currentProduct = null;
@@ -90,7 +91,7 @@ async function renderProductDetail() {
 
   document.getElementById("wishlist-detail-btn").addEventListener("click", async () => {
     if (!auth.currentUser) {
-      alert("Please login to save favorites.");
+      showToast("Please login to save favorites.", "error");
       return;
     }
     const nowFav = await toggleWishlist(currentProduct);
@@ -154,7 +155,7 @@ async function renderReviewsSection(productId) {
 
     document.getElementById("submit-review-btn").addEventListener("click", async () => {
       if (selectedRating === 0) {
-        alert("Please select a star rating.");
+        showToast("Please select a star rating.", "error");
         return;
       }
       const comment = document.getElementById("review-comment").value.trim();
@@ -247,6 +248,14 @@ function toggleCart() {
   cartPanel.classList.toggle("open");
 }
 
+function proceedToCheckout() {
+  if (cart.length === 0) {
+    showToast("Please select at least one item to checkout.", "error");
+    return;
+  }
+  window.location.href = "checkout.html";
+}
+
 function saveCart() {
   localStorage.setItem("watchCart", JSON.stringify(cart));
 }
@@ -265,6 +274,7 @@ window.decreaseQty = decreaseQty;
 window.removeFromCart = removeFromCart;
 window.toggleCart = toggleCart;
 window.changeMainImage = changeMainImage;
+window.proceedToCheckout = proceedToCheckout;
 
 loadCart();
 renderProductDetail();

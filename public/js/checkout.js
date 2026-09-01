@@ -1,9 +1,12 @@
 import { db } from "./firebase-config.js";
 import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+import { showToast } from "./toast.js";
 
 const WHATSAPP_NUMBER = "923267484989";
+const DELIVERY_CHARGE = 250;
 
 const checkoutItemsEl = document.getElementById("checkout-items");
+const checkoutSubtotalEl = document.getElementById("checkout-subtotal");
 const checkoutTotalEl = document.getElementById("checkout-total");
 const whatsappBtn = document.getElementById("whatsapp-order-btn");
 
@@ -13,14 +16,15 @@ function renderCheckout() {
   if (cart.length === 0) {
     checkoutItemsEl.innerHTML = "<p>Your cart is empty.</p>";
     whatsappBtn.disabled = true;
+    checkoutSubtotalEl.textContent = "0";
+    checkoutTotalEl.textContent = "0";
     return;
   }
-
   checkoutItemsEl.innerHTML = "";
-  let total = 0;
+  let subtotal = 0;
 
   cart.forEach(item => {
-    total += item.price * item.qty;
+    subtotal += item.price * item.qty;
     const row = document.createElement("div");
     row.className = "cart-item";
     row.innerHTML = `
@@ -30,7 +34,8 @@ function renderCheckout() {
     checkoutItemsEl.appendChild(row);
   });
 
-  checkoutTotalEl.textContent = total;
+  checkoutSubtotalEl.textContent = subtotal;
+  checkoutTotalEl.textContent = subtotal + DELIVERY_CHARGE;
 }
 
 whatsappBtn.addEventListener("click", async () => {
@@ -38,22 +43,21 @@ whatsappBtn.addEventListener("click", async () => {
   const phone = document.getElementById("cust-phone").value.trim();
   const address = document.getElementById("cust-address").value.trim();
 
-  if (!name || !phone || !address) {
-    alert("Please fill in your name, phone, and address.");
-    return;
-  }
-
   if (cart.length === 0) {
-    alert("Your cart is empty.");
+    showToast("Please select at least one item to checkout.", "error");
     return;
   }
 
-  const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+  if (!name || !phone || !address) {
+    showToast("Please fill in your name, phone, and address.", "error");
+    return;
+  }
+
+  const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+  const total = subtotal + DELIVERY_CHARGE;
 
   whatsappBtn.disabled = true;
   whatsappBtn.textContent = "Placing order...";
-
-  let orderSaved = false;
 
   try {
     await addDoc(collection(db, "orders"), {
@@ -66,31 +70,26 @@ whatsappBtn.addEventListener("click", async () => {
         price: item.price,
         qty: item.qty
       })),
+      subtotal: subtotal,
+      deliveryCharge: DELIVERY_CHARGE,
       total: total,
       status: "New",
       createdAt: serverTimestamp()
     });
-    orderSaved = true;
   } catch (err) {
     console.error("Order save failed:", err);
   }
 
-  if (!orderSaved) {
-    alert("Sorry, we couldn't save your order right now. Please check your internet connection and try again.");
-    whatsappBtn.disabled = false;
-    whatsappBtn.textContent = "Order via WhatsApp";
-    return;
-  }
-
-  let message = `Hello WatchHub! I'd like to place an order:\n\n`;
+  let message = `Hello WatchHub, I would like to place an order:\n\n`;
   cart.forEach(item => {
     message += `${item.name} x${item.qty} - Rs ${item.price * item.qty}\n`;
   });
-  message += `\nTotal: Rs ${total}\n\n`;
-  message += `Name: ${name}\nPhone: ${phone}\nAddress: ${address}`;
+  message += `\nSubtotal: Rs ${subtotal}`;
+  message += `\nDelivery Charges: Rs ${DELIVERY_CHARGE}`;
+  message += `\nTotal: Rs ${total}`;
+  message += `\n\nName: ${name}\nPhone: ${phone}\nAddress: ${address}`;
 
-  const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
-  window.open(url, "_blank");
+  window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, "_blank");
 
   localStorage.removeItem("watchCart");
   whatsappBtn.disabled = false;

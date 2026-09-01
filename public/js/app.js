@@ -2,6 +2,7 @@ import { db, auth } from "./firebase-config.js";
 import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 import { toggleWishlist, getWishlistItems } from "./wishlist-utils.js";
 import { starsHtml } from "./reviews.js";
+import { showToast } from "./toast.js";
 
 let products = [];
 let cart = [];
@@ -135,7 +136,7 @@ async function renderProducts() {
     btn.addEventListener("click", async (e) => {
       e.stopPropagation();
       if (!auth.currentUser) {
-        alert("Please login to save favorites.");
+        showToast("Please login to save favorites.", "error");
         return;
       }
       const id = Number(btn.dataset.id);
@@ -263,6 +264,14 @@ function toggleCart() {
   cartPanel.classList.toggle("open");
 }
 
+function proceedToCheckout() {
+  if (cart.length === 0) {
+    showToast("Please select at least one item to checkout.", "error");
+    return;
+  }
+  window.location.href = "checkout.html";
+}
+
 function saveCart() {
   localStorage.setItem("watchCart", JSON.stringify(cart));
 }
@@ -280,6 +289,7 @@ window.increaseQty = increaseQty;
 window.decreaseQty = decreaseQty;
 window.removeFromCart = removeFromCart;
 window.toggleCart = toggleCart;
+window.proceedToCheckout = proceedToCheckout;
 
 loadCart();
 fetchProducts();

@@ -102,15 +102,26 @@
       createUserWithEmailAndPassword,
       updateProfile,
       GoogleAuthProvider,
-      signInWithRedirect,
-      getRedirectResult
+      signInWithPopup
     } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
 
     const errorEl = document.getElementById("account-error");
 
-    getRedirectResult(auth).catch((err) => {
-      errorEl.textContent = "Google sign-in failed: " + err.message;
-    });
+    function friendlyAuthError(err) {
+      const code = err.code || "";
+      const map = {
+        "auth/user-not-found": "No account found with this email. Please sign up first.",
+        "auth/wrong-password": "Incorrect password. Please try again.",
+        "auth/invalid-credential": "Incorrect email or password, or no account exists. Please check and try again, or sign up.",
+        "auth/email-already-in-use": "An account with this email already exists. Please login instead.",
+        "auth/weak-password": "Password should be at least 6 characters.",
+        "auth/invalid-email": "Please enter a valid email address.",
+        "auth/too-many-requests": "Too many attempts. Please try again later.",
+        "auth/network-request-failed": "Network error. Please check your connection.",
+        "auth/popup-closed-by-user": "Sign-in was cancelled."
+      };
+      return map[code] || "Something went wrong. Please try again.";
+    }
 
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -151,7 +162,7 @@
         await signInWithEmailAndPassword(auth, document.getElementById("login-email").value, document.getElementById("login-password").value);
         window.location.href = "index.html";
       } catch (err) {
-        errorEl.textContent = "Login failed: " + err.message;
+        errorEl.textContent = friendlyAuthError(err);
       }
     });
 
@@ -169,14 +180,19 @@
         await updateProfile(cred.user, { displayName: name });
         window.location.href = "index.html";
       } catch (err) {
-        errorEl.textContent = "Sign up failed: " + err.message;
+        errorEl.textContent = friendlyAuthError(err);
       }
     });
 
     async function googleSignIn() {
       errorEl.textContent = "";
       const provider = new GoogleAuthProvider();
-      await signInWithRedirect(auth, provider);
+      try {
+        await signInWithPopup(auth, provider);
+        window.location.href = "index.html";
+      } catch (err) {
+        errorEl.textContent = friendlyAuthError(err);
+      }
     }
 
     document.getElementById("googleLoginBtn").addEventListener("click", googleSignIn);

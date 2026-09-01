@@ -1214,3 +1214,33 @@ html.dark-mode .login-to-review { color:#aaa; }
 html.dark-mode .welcome-note { background:#121212; }
 html.dark-mode .welcome-note h2 { color:#fff; }
 html.dark-mode .welcome-note p { color:#bbb; }
+
+/* Toast notification */
+.wh-toast {
+  position:fixed;
+  bottom:90px;
+  left:50%;
+  transform:translateX(-50%) translateY(20px);
+  background:#1a1a1a;
+  color:#fff;
+  padding:12px 22px;
+  border-radius:30px;
+  font-size:14px;
+  font-weight:600;
+  box-shadow:0 6px 20px rgba(0,0,0,0.3);
+  opacity:0;
+  z-index:2000;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  max-width:85%;
+  text-align:center;
+}
+.wh-toast.show {
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+}
+.wh-toast-error { background:#c0392b; }
+.wh-toast-info { background:#1a1a1a; }
+
+/* Delivery charge row */
+.grand-total { font-weight:700; font-size:16px; border-top:1px solid #eee; padding-top:8px; margin-top:6px; }
+html.dark-mode .grand-total { border-top-color:#333; }
