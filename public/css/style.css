@@ -1407,3 +1407,13 @@ html.dark-mode .grand-total { border-top-color:#333; }
 /* Account button hamburger icon */
 .account-btn { display:inline-flex; align-items:center; gap:6px; }
 .account-menu-icon { font-size:14px; }
+
+/* Legal pages (Privacy, Terms, Returns) */
+.legal-page { max-width:650px; margin:20px auto; padding:0 20px 40px; line-height:1.7; color:#444; }
+.legal-page h1 { font-family:'Playfair Display', serif; color:#222; margin-bottom:4px; }
+.legal-page .legal-updated { color:#999; font-size:13px; margin-bottom:24px; }
+.legal-page h3 { font-family:'Playfair Display', serif; color:#333; margin-top:24px; margin-bottom:8px; }
+.legal-page a { color:#d4af86; font-weight:600; }
+.footer-legal-links { font-size:12px; margin-top:6px; }
+html.dark-mode .legal-page { color:#ccc; }
+html.dark-mode .legal-page h1, html.dark-mode .legal-page h3 { color:#fff; }
