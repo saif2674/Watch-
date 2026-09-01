@@ -112,7 +112,7 @@ async function renderProducts() {
     const card = document.createElement("div");
     card.className = "card";
     card.innerHTML = `
-      <div style="position:relative;">
+      <div class="card-img-wrap">
         <img src="${p.image}" alt="${p.name}" loading="lazy" onclick="location.href='product.html?id=${p.id}'" style="cursor:pointer; ${inStock ? "" : "opacity:0.5;"}">
         ${inStock ? "" : '<span class="stock-badge">Out of Stock</span>'}
         <button class="wishlist-icon-btn" data-id="${p.id}" style="position:absolute;top:8px;right:8px;background:rgba(255,255,255,0.85);border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:16px;">${isFav ? "❤" : "🤍"}</button>
