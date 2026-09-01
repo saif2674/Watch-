@@ -27,12 +27,53 @@ function renderDetailLoader() {
   `;
 }
 
-function changeMainImage(url) {
-  const mainImg = document.getElementById("main-product-img");
-  if (mainImg) mainImg.src = url;
-  document.querySelectorAll(".thumb-img").forEach(t => t.classList.remove("active-thumb"));
-  const clicked = document.querySelector(`.thumb-img[data-url="${url}"]`);
-  if (clicked) clicked.classList.add("active-thumb");
+function startGallery(images) {
+  const slidesContainer = document.getElementById("gallery-slides");
+  const dotsContainer = document.getElementById("gallery-dots");
+  const prevBtn = document.getElementById("gallery-prev");
+  const nextBtn = document.getElementById("gallery-next");
+
+  if (!slidesContainer || images.length === 0) return;
+
+  let index = 0;
+  let timer = null;
+
+  function render() {
+    slidesContainer.querySelectorAll(".gallery-slide").forEach((el, i) => {
+      el.classList.toggle("active", i === index);
+    });
+    if (dotsContainer) {
+      dotsContainer.querySelectorAll(".gallery-dot").forEach((el, i) => {
+        el.classList.toggle("active", i === index);
+      });
+    }
+  }
+
+  function goTo(i) {
+    index = (i + images.length) % images.length;
+    render();
+  }
+
+  function next() { goTo(index + 1); }
+  function prev() { goTo(index - 1); }
+
+  function restartTimer() {
+    if (timer) clearInterval(timer);
+    if (images.length > 1) {
+      timer = setInterval(next, 3200);
+    }
+  }
+
+  if (images.length > 1) {
+    if (prevBtn) prevBtn.addEventListener("click", () => { prev(); restartTimer(); });
+    if (nextBtn) nextBtn.addEventListener("click", () => { next(); restartTimer(); });
+  } else {
+    if (prevBtn) prevBtn.style.display = "none";
+    if (nextBtn) nextBtn.style.display = "none";
+  }
+
+  render();
+  restartTimer();
 }
 
 async function renderProductDetail() {
@@ -50,12 +91,17 @@ async function renderProductDetail() {
   const isFav = auth.currentUser ? await isInWishlist(currentProduct.id) : false;
   const allImages = [currentProduct.image, ...(currentProduct.gallery || [])].filter(Boolean);
 
-  const thumbsHtml = allImages.length > 1
-    ? `<div class="thumb-row">
-        ${allImages.map((url, i) => `
-          <img src="${url}" class="thumb-img ${i === 0 ? 'active-thumb' : ''}" data-url="${url}" loading="lazy" onclick="changeMainImage('${url}')">
-        `).join("")}
-      </div>`
+  const gallerySlidesHtml = allImages.map((url, i) =>
+    `<div class="gallery-slide ${i === 0 ? "active" : ""}" style="background-image:url('${url}')"></div>`
+  ).join("");
+
+  const galleryDotsHtml = allImages.length > 1
+    ? allImages.map((_, i) => `<span class="gallery-dot ${i === 0 ? "active" : ""}"></span>`).join("")
+    : "";
+
+  const navButtonsHtml = allImages.length > 1
+    ? `<button class="gallery-nav gallery-prev" id="gallery-prev">&#10094;</button>
+       <button class="gallery-nav gallery-next" id="gallery-next">&#10095;</button>`
     : "";
 
   const specsHtml = currentProduct.specifications && Object.keys(currentProduct.specifications).length > 0
@@ -71,12 +117,15 @@ async function renderProductDetail() {
 
   detailContainer.innerHTML = `
     <div class="detail-card">
-      <div style="position:relative;">
-        <img id="main-product-img" src="${currentProduct.image}" alt="${currentProduct.name}" style="${inStock ? "" : "opacity:0.5;"}">
+      <div class="detail-gallery">
+        <div class="gallery-slides" id="gallery-slides">
+          ${gallerySlidesHtml}
+        </div>
+        ${navButtonsHtml}
+        <div class="gallery-dots" id="gallery-dots">${galleryDotsHtml}</div>
         ${inStock ? "" : '<span class="stock-badge">Out of Stock</span>'}
-        <button id="wishlist-detail-btn" style="position:absolute;top:8px;right:8px;background:rgba(255,255,255,0.85);border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:18px;">${isFav ? "❤" : "🤍"}</button>
+        <button id="wishlist-detail-btn" class="gallery-wishlist-btn">${isFav ? "❤" : "🤍"}</button>
       </div>
-      ${thumbsHtml}
       <div class="detail-info">
         <h2>${currentProduct.name}</h2>
         <div class="rating-line">${ratingHtml}</div>
@@ -98,6 +147,7 @@ async function renderProductDetail() {
     document.getElementById("wishlist-detail-btn").textContent = nowFav ? "❤" : " 🤍";
   });
 
+  startGallery(allImages);
   renderReviewsSection(currentProduct.id);
 }
 
@@ -273,7 +323,6 @@ window.increaseQty = increaseQty;
 window.decreaseQty = decreaseQty;
 window.removeFromCart = removeFromCart;
 window.toggleCart = toggleCart;
-window.changeMainImage = changeMainImage;
 window.proceedToCheckout = proceedToCheckout;
 
 loadCart();
