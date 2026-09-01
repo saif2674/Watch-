@@ -1393,3 +1393,13 @@ html.dark-mode .grand-total { border-top-color:#333; }
   opacity:1;
   animation: gallery-kenburns 5s ease-in-out forwards, product-img-glow 3s ease-in-out infinite;
 }
+
+/* Extend Playfair Display serif font to more headings site-wide */
+.card-body h3,
+.detail-info h2,
+.welcome-note h2,
+.checkout-page h2,
+.contact-page h2,
+.cart-panel h2 {
+  font-family: 'Playfair Display', serif;
+}
