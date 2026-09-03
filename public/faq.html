@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FAQ - WatchHub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <img src="https://i.ibb.co/FT8KrZq/file-00000000039c82088e38b3467c1dfeb3.png" alt="WatchHub" class="site-logo" onclick="location.href='index.html'">
+  </header>
+  <a href="index.html" class="back-to-shop-link">&larr; Back to Home</a>
+
+  <main class="legal-page">
+    <h1>Frequently Asked Questions</h1>
+
+    <div class="faq-item">
+      <button class="faq-question">How long does delivery take? <span class="faq-toggle">+</span></button>
+      <div class="faq-answer">Delivery usually takes 3-5 business days depending on your location within Pakistan.</div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question">Do you offer Cash on Delivery? <span class="faq-toggle">+</span></button>
+      <div class="faq-answer">Yes, Cash on Delivery is available for all orders. Delivery charges must be paid in advance, and the remaining amount is payable upon delivery.</div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question">Can I return a product? <span class="faq-toggle">+</span></button>
+      <div class="faq-answer">Yes, you can return a product within 7 days of delivery if it is unused and in its original packaging. See our <a href="returns.html">Return Policy</a> for details.</div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question">Are the watches original/genuine? <span class="faq-toggle">+</span></button>
+      <div class="faq-answer">Yes, all watches sold on WatchHub are 100% genuine and quality-checked before shipping.</div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question">How do I track my order? <span class="faq-toggle">+</span></button>
+      <div class="faq-answer">You can view your order status anytime by logging in and visiting the "My Orders" section in your account.</div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question">How can I contact WatchHub? <span class="faq-toggle">+</span></button>
+      <div class="faq-answer">You can reach us via WhatsApp, phone, or email through our <a href="contact.html">Contact page</a>.</div>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 WatchHub. All rights reserved.</p>
+    <p>Crafted with precision, delivered with care.</p>
+    <p class="footer-legal-links">
+      <a href="privacy.html" class="footer-link">Privacy Policy</a> &middot;
+      <a href="terms.html" class="footer-link">Terms &amp; Conditions</a> &middot;
+      <a href="returns.html" class="footer-link">Return Policy</a> &middot;
+      <a href="faq.html" class="footer-link">FAQ</a>
+    </p>
+  </footer>
+
+  <script src="js/theme.js"></script>
+  <script>
+    document.querySelectorAll(".faq-question").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const item = btn.parentElement;
+        const wasOpen = item.classList.contains("open");
+        document.querySelectorAll(".faq-item").forEach(i => i.classList.remove("open"));
+        if (!wasOpen) item.classList.add("open");
+      });
+    });
+  </script>
+</body>
+</html>

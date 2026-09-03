@@ -1417,3 +1417,68 @@ html.dark-mode .grand-total { border-top-color:#333; }
 .footer-legal-links { font-size:12px; margin-top:6px; }
 html.dark-mode .legal-page { color:#ccc; }
 html.dark-mode .legal-page h1, html.dark-mode .legal-page h3 { color:#fff; }
+
+/* WhatsApp floating button */
+.whatsapp-float-btn {
+  position:fixed;
+  bottom:20px;
+  left:20px;
+  width:52px;
+  height:52px;
+  border-radius:50%;
+  background:#25D366;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:26px;
+  text-decoration:none;
+  box-shadow:0 4px 14px rgba(37,211,102,0.4);
+  z-index:998;
+  animation: wa-pulse 2.4s ease-in-out infinite;
+}
+@keyframes wa-pulse {
+  0%, 100% { box-shadow:0 4px 14px rgba(37,211,102,0.4); }
+  50% { box-shadow:0 4px 24px rgba(37,211,102,0.8); }
+}
+
+/* FAQ Accordion */
+.faq-item { background:#fff; border-radius:12px; margin-bottom:10px; box-shadow:0 2px 8px rgba(0,0,0,0.06); overflow:hidden; }
+.faq-question {
+  width:100%; text-align:left; padding:14px 16px; border:none; background:none;
+  font-weight:600; font-size:15px; color:#333; cursor:pointer;
+  display:flex; justify-content:space-between; align-items:center;
+}
+.faq-toggle { color:#d4af86; font-size:18px; transition:transform 0.3s ease; }
+.faq-item.open .faq-toggle { transform:rotate(45deg); }
+.faq-answer {
+  max-height:0; overflow:hidden; padding:0 16px; color:#666; font-size:14px; line-height:1.6;
+  transition: max-height 0.35s ease, padding 0.35s ease;
+}
+.faq-item.open .faq-answer { max-height:300px; padding:0 16px 16px; }
+html.dark-mode .faq-item { background:#1e1e1e; }
+html.dark-mode .faq-question { color:#eee; }
+html.dark-mode .faq-answer { color:#bbb; }
+
+/* Reposition: Dark mode toggle moves to top-right with glow animation */
+.theme-toggle-btn {
+  position:fixed;
+  top:70px;
+  right:15px;
+  bottom:auto;
+  left:auto;
+  width:44px;
+  height:44px;
+  border-radius:50%;
+  animation: theme-btn-glow 2.6s ease-in-out infinite;
+}
+@keyframes theme-btn-glow {
+  0%, 100% { box-shadow:0 0 8px rgba(212,175,134,0.3); }
+  50% { box-shadow:0 0 20px rgba(212,175,134,0.9); }
+}
+
+/* WhatsApp button takes over bottom-right spot */
+.whatsapp-float-btn {
+  left:auto;
+  right:20px;
+}
