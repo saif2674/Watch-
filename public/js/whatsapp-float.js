@@ -1,6 +1,6 @@
 (function () {
   const btn = document.createElement("a");
-  btn.href = "https://wa.me/923267484989?text=" + encodeURIComponent("Hello WatchHub, I have a question.");
+  btn.href = "https://wa.me/923370596139?text=" + encodeURIComponent("Hello WatchHub, I have a question.");
   btn.target = "_blank";
   btn.className = "whatsapp-float-btn";
   btn.title = "Chat with us on WhatsApp";

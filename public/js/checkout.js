@@ -3,7 +3,7 @@ import { collection, addDoc, getDocs, serverTimestamp } from "https://www.gstati
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
 import { showToast } from "./toast.js";
 
-const WHATSAPP_NUMBER = "923267484989";
+const WHATSAPP_NUMBER = "923370596139";
 const DELIVERY_CHARGE = 250;
 
 const checkoutItemsEl = document.getElementById("checkout-items");
