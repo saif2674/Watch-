@@ -97,9 +97,15 @@ async function loadOrders() {
     const snapshot = await getDocs(q);
     orders = snapshot.docs.map(d => d.data());
   } catch (err) {
-    const q = query(collection(db, "orders"), where("userId", "==", currentUser.uid));
-    const snapshot = await getDocs(q);
-    orders = snapshot.docs.map(d => d.data());
+    try {
+      const q = query(collection(db, "orders"), where("userId", "==", currentUser.uid));
+      const snapshot = await getDocs(q);
+      orders = snapshot.docs.map(d => d.data());
+    } catch (err2) {
+      console.error("Failed to load orders:", err2);
+      listEl.innerHTML = "<p class='empty-msg'>Orders load nahi ho paye — dobara try karein.</p>";
+      return;
+    }
   }
 
   if (orders.length === 0) {
@@ -117,7 +123,7 @@ async function loadOrders() {
           <span class="order-mini-status">${STATUS_LABELS[o.status] || o.status}</span>
         </div>
         <div>${itemsText}</div>
-        <div style="margin-top:6px;font-weight:700;">Total: Rs ${o.total}</div>
+        <div style="margin-top:6px;font-weight:700;">Total: Rs ${Number(o.total || 0).toLocaleString("en-US")}</div>
       </div>
     `;
   }).join("");

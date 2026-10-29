@@ -49,7 +49,7 @@ async function render() {
       </div>
       <div class="card-body">
         <h3 onclick="location.href='product.html?id=${p.id}'" style="cursor:pointer">${p.name}</h3>
-        <p class="price">Rs ${p.price}</p>
+        <p class="price">Rs ${Number(p.price || 0).toLocaleString("en-US")}</p>
       </div>
     `;
     container.appendChild(card);

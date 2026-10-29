@@ -127,8 +127,11 @@ whatsappBtn.addEventListener("click", async () => {
   window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, "_blank");
 
   localStorage.removeItem("watchCart");
+  cart = [];
+  renderCheckout();
   whatsappBtn.disabled = false;
   whatsappBtn.textContent = "Order via WhatsApp";
+  showToast("Order WhatsApp par bhej diya gaya hai. Shukriya!");
 });
 
 renderCheckout();

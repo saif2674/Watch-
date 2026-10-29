@@ -89,6 +89,12 @@ function startGallery(images) {
   if (images.length > 1) {
     if (prevBtn) prevBtn.addEventListener("click", () => { prev(); restartTimer(); });
     if (nextBtn) nextBtn.addEventListener("click", () => { next(); restartTimer(); });
+    if (dotsContainer) {
+      dotsContainer.querySelectorAll(".gallery-dot").forEach((dot, i) => {
+        dot.style.cursor = "pointer";
+        dot.addEventListener("click", () => { goTo(i); restartTimer(); });
+      });
+    }
   } else {
     if (prevBtn) prevBtn.style.display = "none";
     if (nextBtn) nextBtn.style.display = "none";
@@ -188,7 +194,20 @@ async function renderReviewsSection(productId) {
   const section = document.getElementById("reviews-section");
   section.innerHTML = "<p style='padding:10px 0;color:#999;'>Loading reviews...</p>";
 
-  const reviews = await getReviews(productId);
+  let reviews = [];
+  let myReview = null;
+  try {
+    reviews = await getReviews(productId);
+    myReview = auth.currentUser ? await getMyReview(productId) : null;
+  } catch (err) {
+    console.error("Failed to load reviews:", err);
+    section.innerHTML = `
+      <h3 class="reviews-heading">Customer Reviews</h3>
+      <p class="no-reviews-text">Reviews abhi load nahi ho paye — page refresh karke dobara try karein.</p>
+      ${auth.currentUser ? "" : `<p class="login-to-review"><a href="account.html?tab=login">Login</a> to leave a review.</p>`}
+    `;
+    return;
+  }
   reviews.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
 
   const reviewsHtml = reviews.length > 0
@@ -202,8 +221,6 @@ async function renderReviewsSection(productId) {
         </div>
       `).join("")
     : "<p class='no-reviews-text'>No reviews yet. Be the first to review!</p>";
-
-  const myReview = auth.currentUser ? await getMyReview(productId) : null;
 
   const formHtml = auth.currentUser
     ? `
