@@ -115,7 +115,7 @@ async function loadOrders() {
 
   listEl.innerHTML = orders.map(o => {
     const dateStr = o.createdAt && o.createdAt.toDate ? o.createdAt.toDate().toLocaleDateString() : "";
-    const itemsText = (o.items || []).map(it => `${it.name} x${it.qty}`).join(", ");
+    const itemsText = (o.items || []).map(it => `${it.name} x${it.qty} — Rs ${Number((it.price || 0) * (it.qty || 0)).toLocaleString("en-US")}`).join("<br>");
     return `
       <div class="order-mini-card">
         <div class="order-mini-top">

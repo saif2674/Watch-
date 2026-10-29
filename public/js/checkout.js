@@ -63,11 +63,26 @@ async function loadSavedAddresses(user) {
   });
 }
 
+let currentUser = null;
+
 onAuthStateChanged(auth, (user) => {
+  currentUser = user;
   loadSavedAddresses(user);
+  const note = document.getElementById("login-required-note");
+  if (note) note.style.display = user ? "none" : "block";
+  if (!user) whatsappBtn.textContent = "Login to Order";
+  else if (!whatsappBtn.disabled) whatsappBtn.textContent = "Order via WhatsApp";
 });
 
 whatsappBtn.addEventListener("click", async () => {
+  // Orders require a logged-in account (Saifi's rule, 2026-10-29)
+  if (!currentUser) {
+    sessionStorage.setItem("watchReturnTo", "checkout.html");
+    showToast("Order karne ke liye pehle login karein.", "error");
+    setTimeout(() => { window.location.href = "account.html?tab=login"; }, 900);
+    return;
+  }
+
   const name = document.getElementById("cust-name").value.trim();
   const phone = document.getElementById("cust-phone").value.trim();
   const address = document.getElementById("cust-address").value.trim();
@@ -106,9 +121,8 @@ whatsappBtn.addEventListener("click", async () => {
       createdAt: serverTimestamp()
     };
 
-    if (auth.currentUser) {
-      orderData.userId = auth.currentUser.uid;
-    }
+    orderData.userId = currentUser.uid;
+    orderData.userEmail = currentUser.email || "";
 
     await addDoc(collection(db, "orders"), orderData);
   } catch (err) {
@@ -116,12 +130,12 @@ whatsappBtn.addEventListener("click", async () => {
   }
 
   let message = `Hello WatchHub, I would like to place an order:\n\n`;
-  cart.forEach(item => {
-    message += `${item.name} x${item.qty} - Rs ${fmt(item.price * item.qty)}\n`;
+  cart.forEach((item, i) => {
+    message += `${i + 1}. ${item.name} x${item.qty} — Rs ${fmt(item.price * item.qty)}\n`;
   });
   message += `\nSubtotal: Rs ${fmt(subtotal)}`;
   message += `\nDelivery Charges: Rs ${fmt(DELIVERY_CHARGE)}`;
-  message += `\nTotal: Rs ${fmt(total)}`;
+  message += `\nTOTAL: Rs ${fmt(total)}`;
   message += `\n\nName: ${name}\nPhone: ${phone}\nAddress: ${address}`;
 
   window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, "_blank");

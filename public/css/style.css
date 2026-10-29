@@ -1848,3 +1848,18 @@ body.cart-open .theme-toggle-btn {
   .filter-btn { flex: 0 0 auto; white-space: nowrap; }
   .filters { padding-top: 14px; }
 }
+
+/* v6: Add-to-Cart button on wishlist cards */
+.wishlist-add-cart-btn {
+  width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+  background: #111;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13.5px;
+}
+.wishlist-add-cart-btn:active { transform: scale(0.97); }

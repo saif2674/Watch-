@@ -1,6 +1,7 @@
 import { auth } from "./firebase-config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
 import { getWishlistItems, removeFromWishlist } from "./wishlist-utils.js";
+import { showToast } from "./toast.js";
 
 const container = document.getElementById("wishlist-container");
 
@@ -50,9 +51,26 @@ async function render() {
       <div class="card-body">
         <h3 onclick="location.href='product.html?id=${p.id}'" style="cursor:pointer">${p.name}</h3>
         <p class="price">Rs ${Number(p.price || 0).toLocaleString("en-US")}</p>
+        <button class="wishlist-add-cart-btn" data-id="${p.id}">Add to Cart</button>
       </div>
     `;
     container.appendChild(card);
+  });
+
+  document.querySelectorAll(".wishlist-add-cart-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const product = items.find(p => p.id === Number(btn.dataset.id));
+      if (!product) return;
+      let savedCart = [];
+      try { savedCart = JSON.parse(localStorage.getItem("watchCart")) || []; } catch (e) { savedCart = []; }
+      const existing = savedCart.find(i => i.id === product.id);
+      if (existing) existing.qty += 1;
+      else savedCart.push({ id: product.id, name: product.name, price: product.price, image: product.image, qty: 1 });
+      localStorage.setItem("watchCart", JSON.stringify(savedCart));
+      btn.textContent = "Added ✓";
+      showToast("Added to cart.");
+      setTimeout(() => { btn.textContent = "Add to Cart"; }, 1500);
+    });
   });
 
   document.querySelectorAll(".remove-wishlist-btn").forEach(btn => {

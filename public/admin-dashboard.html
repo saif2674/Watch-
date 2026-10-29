@@ -301,12 +301,16 @@
           ? o.createdAt.toDate().toLocaleString()
           : "";
 
+        const fmtA = (n) => Number(n || 0).toLocaleString("en-US");
         const itemsHtml = (o.items || []).map(it => `
           <div class="order-item-row">
             <span>${it.name} x${it.qty}</span>
-            <span>Rs ${it.price * it.qty}</span>
+            <span>Rs ${fmtA(it.price * it.qty)}</span>
           </div>
         `).join("");
+        const subA = (o.subtotal != null) ? o.subtotal : (o.items || []).reduce((sum, it) => sum + (it.price * it.qty), 0);
+        const delA = (o.deliveryCharge != null) ? o.deliveryCharge : 250;
+        const totA = (o.total != null) ? o.total : subA + delA;
 
         const statusOptionsHtml = STATUS_OPTIONS.map(s =>
           `<option value="${s}" ${o.status === s ? "selected" : ""}>${s}</option>`
@@ -323,7 +327,9 @@
           </div>
           <div class="order-items">
             ${itemsHtml}
-            <div class="order-total">Total: Rs ${o.total}</div>
+            <div class="order-item-row"><span>Subtotal</span><span>Rs ${fmtA(subA)}</span></div>
+            <div class="order-item-row"><span>Delivery</span><span>Rs ${fmtA(delA)}</span></div>
+            <div class="order-total">Total: Rs ${fmtA(totA)}</div>
           </div>
           <div class="order-bottom">
             <select class="status-select status-${o.status}">

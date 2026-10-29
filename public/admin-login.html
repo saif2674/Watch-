@@ -4,25 +4,38 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin Login - WatchHub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 <style>
-  .login-box { max-width: 350px; margin: 80px auto; padding: 30px; border-radius: 12px; box-shadow: 0 3px 12px rgba(0,0,0,0.1); background: #fff; }
-  .login-box input { width: 100%; padding: 10px; margin-bottom: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
-  .login-box button { width: 100%; padding: 10px; border-radius: 8px; border: none; background: #d4af86; color: #fff; font-weight: 600; cursor: pointer; }
-  #error-msg { color: red; text-align: center; margin-top: 10px; font-size: 13px; }
-  #ok-msg { color: green; text-align: center; margin-top: 10px; font-size: 13px; }
-  .login-links { text-align: center; margin-top: 14px; font-size: 13px; }
+  body { margin: 0; font-family: 'Poppins', sans-serif; min-height: 100vh;
+    background: linear-gradient(160deg, #0d0d0d 0%, #1a1a1a 55%, #2a2113 100%);
+    display: flex; align-items: center; justify-content: center; padding: 24px 16px 110px; }
+  .login-box { width: 100%; max-width: 380px; background: #fff; padding: 34px 28px; border-radius: 20px;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.5); animation: admUp 0.6s ease both; }
+  @keyframes admUp { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+  .login-brand { text-align: center; font-family: 'Playfair Display', serif; font-size: 26px; color: #141414; }
+  .login-sub { text-align: center; color: #b98d54; font-size: 11.5px; letter-spacing: 3px; margin: 4px 0 24px; font-weight: 600; }
+  .login-box label { display: block; font-size: 12.5px; font-weight: 600; color: #555; margin: 0 0 6px 2px; }
+  .login-box input { width: 100%; padding: 13px 15px; margin-bottom: 16px; border: 1.5px solid #e3dac6; border-radius: 12px; box-sizing: border-box; font-size: 14.5px; font-family: 'Poppins', sans-serif; }
+  .login-box input:focus { outline: none; border-color: #d4af86; box-shadow: 0 0 0 4px rgba(212,175,134,0.18); }
+  .login-box button { width: 100%; padding: 13px; border-radius: 12px; border: none; cursor: pointer;
+    background: linear-gradient(135deg, #e8cf9f, #b98d54); color: #191204; font-weight: 700; font-size: 15px; font-family: 'Poppins', sans-serif; }
+  .login-box button:active { transform: scale(0.98); }
+  #error-msg { color: #d33; text-align: center; margin-top: 12px; font-size: 13px; }
+  #ok-msg { color: #1c7c43; text-align: center; margin-top: 12px; font-size: 13px; }
+  .login-links { text-align: center; margin-top: 16px; font-size: 13px; }
   .login-links a { color: #8a6a34; text-decoration: none; cursor: pointer; }
   .login-links a:hover { text-decoration: underline; }
-  .login-brand { text-align: center; font-family: 'Playfair Display', serif; font-size: 22px; margin-bottom: 4px; }
-  .login-sub { text-align: center; color: #888; font-size: 12px; margin-bottom: 18px; letter-spacing: 1px; }
 </style>
 </head>
 <body>
   <div class="login-box">
     <div class="login-brand">⌚ WatchHub</div>
     <p class="login-sub">ADMIN PANEL</p>
-    <input type="email" id="email" placeholder="Email">
+    <label for="email">Email</label>
+    <input type="email" id="email" placeholder="Admin email">
+    <label for="password">Password</label>
     <input type="password" id="password" placeholder="Password">
     <button id="loginBtn">Login</button>
     <p id="error-msg"></p>
