@@ -1655,3 +1655,113 @@ html.dark-mode .price { color: #d4af86; }
   .hero-title { font-size: 38px; }
   .showcase-card { height: 170px; }
 }
+
+/* ============ WatchHub v3 — App-style bottom navigation (2026-10-29) ============ */
+body { padding-bottom: 96px; }
+
+.bottom-nav {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(12px + env(safe-area-inset-bottom));
+  width: min(520px, calc(100% - 20px));
+  background: rgba(12, 12, 12, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(212, 175, 134, 0.35);
+  border-radius: 30px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  padding: 8px 10px 7px;
+  z-index: 90;
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(0, 0, 0, 0.25);
+  animation: bn-rise 0.5s ease both;
+}
+@keyframes bn-rise {
+  from { opacity: 0; transform: translate(-50%, 18px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+.bn-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  text-decoration: none;
+  color: #cfcfcf;
+  font-size: 10px;
+  letter-spacing: 0.4px;
+  padding: 4px 10px;
+  border-radius: 16px;
+  transition: color 0.2s ease, transform 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.bn-item:active { transform: scale(0.92); }
+.bn-icon { font-size: 20px; line-height: 1; filter: grayscale(0.4); }
+.bn-item.active { color: #d4af86; }
+.bn-item.active .bn-icon { filter: none; transform: translateY(-1px) scale(1.08); }
+
+.bn-center {
+  position: relative;
+  width: 54px;
+  height: 54px;
+  margin-top: -24px;
+  border-radius: 50%;
+  border: 3px solid rgba(12, 12, 12, 0.92);
+  background: linear-gradient(135deg, #f0d9ae 0%, #d4af86 45%, #a97e46 100%);
+  color: #191204;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(169, 126, 70, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.bn-center:active { transform: scale(0.93); }
+.bn-plus { font-size: 30px; font-weight: 600; line-height: 1; margin-top: -2px; }
+.bn-badge {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 10px;
+  background: #d33;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #fff;
+}
+
+/* Cart sheet must cover the bottom nav when open */
+.cart-panel { z-index: 120; }
+
+/* Keep floating buttons clear of the bottom bar */
+.whatsapp-float-btn { bottom: 108px !important; }
+
+/* Mobile storefront: 2-column app-like product grid */
+@media (max-width: 700px) {
+  .products {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    padding: 24px 12px;
+  }
+  .card img { height: 150px; }
+  .card-body { padding: 11px; }
+  .card-body h3 { font-size: 14px; }
+  .card-body p { font-size: 11.5px; }
+  .card-desc { min-height: 48px; }
+  .price { font-size: 15px; }
+  .card-body button { padding: 9px; font-size: 12.5px; }
+  .trust-strip-item { font-size: 11.5px; padding: 7px 13px; }
+}
+
+@media (max-width: 380px) {
+  .bn-item { padding: 4px 6px; }
+  .bn-icon { font-size: 18px; }
+}
