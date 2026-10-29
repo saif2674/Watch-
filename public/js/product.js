@@ -279,7 +279,7 @@ function addToCart(id) {
   }
   renderCart();
   saveCart();
-  cartPanel.classList.add("open");
+  setCartOpen(true);
   document.getElementById("cart-btn").classList.add("cart-pulse");
   setTimeout(() => {
     document.getElementById("cart-btn").classList.remove("cart-pulse");
@@ -344,8 +344,15 @@ function renderCart() {
   cartTotalEl.textContent = Number(total).toLocaleString("en-US");
 }
 
+function setCartOpen(open) {
+  cartPanel.classList.toggle("open", open);
+  document.body.classList.toggle("cart-open", open);
+  const bd = document.getElementById("cart-backdrop");
+  if (bd) bd.classList.toggle("show", open);
+}
+
 function toggleCart() {
-  cartPanel.classList.toggle("open");
+  setCartOpen(!cartPanel.classList.contains("open"));
 }
 
 function proceedToCheckout() {

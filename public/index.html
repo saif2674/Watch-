@@ -113,12 +113,16 @@
     <p><a href="contact.html" class="footer-link">Contact Us</a></p>
   </footer>
 
+  <div id="cart-backdrop" class="cart-backdrop" onclick="toggleCart()"></div>
   <div id="cart-panel" class="cart-panel">
-    <h2>🛒 Your Cart</h2>
+    <div class="cart-handle"></div>
+    <div class="cart-head">
+      <h2>🛒 Your Cart</h2>
+      <button class="cart-close" onclick="toggleCart()" aria-label="Close cart">✕</button>
+    </div>
     <div id="cart-items"></div>
     <p class="cart-total-row">Total: Rs <span id="cart-total">0</span></p>
     <button onclick="proceedToCheckout()" class="checkout-btn">Proceed to Checkout</button>
-    <button onclick="toggleCart()">Close</button>
   </div>
 
   

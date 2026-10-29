@@ -1609,15 +1609,9 @@ html { scroll-behavior: smooth; }
 }
 .price { color: #8a6a34; letter-spacing: 0.3px; }
 
-/* Sticky filter bar */
+/* Filter bar — normal flow (v5: sticky removed, it trapped products under it) */
 .filters {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  background: rgba(250,246,239,0.94);
-  backdrop-filter: blur(8px);
-  padding-bottom: 14px;
-  border-radius: 0 0 16px 16px;
+  padding-bottom: 6px;
 }
 
 /* Load error box (products / product detail) */
@@ -1764,4 +1758,93 @@ body { padding-bottom: 96px; }
 @media (max-width: 380px) {
   .bn-item { padding: 4px 6px; }
   .bn-icon { font-size: 18px; }
+}
+
+/* ============ WatchHub v5 — Clean cart sheet + de-cluttered layout (2026-10-29) ============ */
+
+/* Dim backdrop behind the cart sheet; click it to close */
+.cart-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 12, 6, 0.5);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 110;
+}
+.cart-backdrop.show { opacity: 1; pointer-events: auto; }
+
+/* Cart sheet polish */
+.cart-panel {
+  max-height: 80vh;
+  border-radius: 24px 24px 0 0;
+  padding: 10px 20px 22px;
+}
+.cart-handle {
+  width: 44px;
+  height: 5px;
+  border-radius: 3px;
+  background: #ddd;
+  margin: 2px auto 10px;
+}
+.cart-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.cart-head h2 { margin-bottom: 0; }
+.cart-close {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: #111;
+  color: #fff;
+  font-size: 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+}
+.cart-close:active { transform: scale(0.92); }
+.cart-panel .checkout-btn { margin-top: 16px; }
+
+/* While the cart is open, clear everything else out of the way */
+body.cart-open .bottom-nav {
+  transform: translate(-50%, 130%);
+  opacity: 0;
+  pointer-events: none;
+}
+body.cart-open .whatsapp-float-btn,
+body.cart-open .theme-toggle-btn {
+  opacity: 0;
+  pointer-events: none;
+}
+.bottom-nav { transition: transform 0.35s ease, opacity 0.3s ease; }
+.whatsapp-float-btn, .theme-toggle-btn { transition: opacity 0.25s ease; }
+
+/* Theme toggle: bottom-left, above the nav bar — no longer sits on the Sort field */
+.theme-toggle-btn {
+  top: auto;
+  left: 15px;
+  right: auto;
+  bottom: 108px;
+}
+
+/* Category chips: one swipeable row on mobile instead of three stacked rows */
+@media (max-width: 700px) {
+  .filter-buttons {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .filter-buttons::-webkit-scrollbar { display: none; }
+  .filter-btn { flex: 0 0 auto; white-space: nowrap; }
+  .filters { padding-top: 14px; }
 }
