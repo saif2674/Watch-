@@ -49,12 +49,45 @@ function renderSkeletons(count = 6) {
   }
 }
 
+const FALLBACK_IMG = "https://images.unsplash.com/photo-1524805444758-089113d48a6d?w=500";
+
+function fmtRs(n) {
+  return "Rs " + Number(n || 0).toLocaleString("en-US");
+}
+
+// Keep only clean, sellable products: drops test/junk entries (e.g. 1-letter
+// names, missing image or price) so they never reach the storefront or filters.
+function sanitizeProducts(list) {
+  return list.filter(p => {
+    if (!p) return false;
+    const name = String(p.name || "").trim();
+    const price = Number(p.price);
+    if (name.length < 2) return false;
+    if (!p.image || typeof p.image !== "string" || !p.image.startsWith("http")) return false;
+    if (isNaN(price) || price <= 0) return false;
+    p.name = name;
+    p.price = price;
+    p.category = String(p.category || "Classic").trim() || "Classic";
+    p.description = String(p.description || "").trim();
+    return true;
+  });
+}
+
 async function fetchProducts() {
   renderSkeletons();
-  const snapshot = await getDocs(collection(db, "products"));
-  products = snapshot.docs.map(doc => doc.data());
-  renderCategoryFilters();
-  renderProducts();
+  try {
+    const snapshot = await getDocs(collection(db, "products"));
+    products = sanitizeProducts(snapshot.docs.map(doc => doc.data()));
+    renderCategoryFilters();
+    renderProducts();
+  } catch (err) {
+    console.error("Failed to load products:", err);
+    container.innerHTML = `
+      <div class="load-error">
+        <p>⚠️ Watches load nahi ho paye. Internet connection check karke dobara try karein.</p>
+        <button onclick="location.reload()">Retry</button>
+      </div>`;
+  }
 }
 
 function renderCategoryFilters() {
@@ -113,15 +146,15 @@ async function renderProducts() {
     card.className = "card";
     card.innerHTML = `
       <div class="card-img-wrap">
-        <img src="${p.image}" alt="${p.name}" loading="lazy" onclick="location.href='product.html?id=${p.id}'" style="cursor:pointer; ${inStock ? "" : "opacity:0.5;"}">
+        <img src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.onerror=null;this.src='${FALLBACK_IMG}'" onclick="location.href='product.html?id=${p.id}'" style="cursor:pointer; ${inStock ? "" : "opacity:0.5;"}">
         ${inStock ? "" : '<span class="stock-badge">Out of Stock</span>'}
         <button class="wishlist-icon-btn" data-id="${p.id}" style="position:absolute;top:8px;right:8px;background:rgba(255,255,255,0.85);border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:16px;">${isFav ? "❤" : "🤍"}</button>
       </div>
       <div class="card-body">
         <h3 onclick="location.href='product.html?id=${p.id}'" style="cursor:pointer">${p.name}</h3>
         <div class="rating-line">${ratingHtml}</div>
-        <p>${p.description}</p>
-        <p class="price">Rs ${p.price}</p>
+        <p class="card-desc">${p.description}</p>
+        <p class="price">${fmtRs(p.price)}</p>
         <button onclick="addToCart(${p.id})" ${inStock ? "" : "disabled"}>${inStock ? "Add to Cart" : "Out of Stock"}</button>
         <button class="view-details-btn" onclick="location.href='product.html?id=${p.id}'">
           <span>View Details</span>
@@ -245,7 +278,7 @@ function renderCart() {
     row.innerHTML = `
       <div class="cart-item-info">
         <span class="cart-item-name">${item.name}</span>
-        <span class="cart-item-price">Rs ${item.price * item.qty}</span>
+        <span class="cart-item-price">${fmtRs(item.price * item.qty)}</span>
       </div>
       <div class="qty-controls">
         <button onclick="decreaseQty(${item.id})">-</button>
@@ -257,7 +290,7 @@ function renderCart() {
     cartItemsEl.appendChild(row);
   });
 
-  cartTotalEl.textContent = total;
+  cartTotalEl.textContent = Number(total).toLocaleString("en-US");
 }
 
 function toggleCart() {

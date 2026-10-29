@@ -50,9 +50,35 @@
 
   <section class="hero">
     <div class="hero-content">
+      <p class="hero-eyebrow">✦ WatchHub Premium Collection ✦</p>
       <h1 class="hero-title">Timeless Elegance</h1>
       <p class="hero-subtitle">Premium watches designed for those who value every second.</p>
       <button class="hero-cta shine-btn" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">Shop Collection &rarr;</button>
+    </div>
+  </section>
+
+  <section class="trust-strip">
+    <div class="trust-strip-item"><span class="ts-icon">💵</span><span>Cash on Delivery</span></div>
+    <div class="trust-strip-item"><span class="ts-icon">🚚</span><span>Delivery in 3–5 Days</span></div>
+    <div class="trust-strip-item"><span class="ts-icon">↩️</span><span>Easy Returns</span></div>
+    <div class="trust-strip-item"><span class="ts-icon">✔️</span><span>100% Genuine Products</span></div>
+  </section>
+
+  <section class="showcase">
+    <h2 class="showcase-title">Shop by Style</h2>
+    <div class="showcase-grid">
+      <div class="showcase-card" data-cat="Luxury">
+        <img src="https://images.unsplash.com/photo-1533139502658-0198f920d8e8?w=800" alt="Luxury watches" loading="lazy">
+        <div class="showcase-label">Luxury<span>Shop now &rarr;</span></div>
+      </div>
+      <div class="showcase-card" data-cat="Chronograph">
+        <img src="https://images.unsplash.com/photo-1547996160-81dfa63595aa?w=800" alt="Chronograph watches" loading="lazy">
+        <div class="showcase-label">Chronograph<span>Shop now &rarr;</span></div>
+      </div>
+      <div class="showcase-card" data-cat="Sport">
+        <img src="https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=800" alt="Sport watches" loading="lazy">
+        <div class="showcase-label">Sport<span>Shop now &rarr;</span></div>
+      </div>
     </div>
   </section>
 
@@ -93,6 +119,23 @@
   </div>
 
   
+  <script>
+    // "Shop by Style" cards: scroll to the grid and activate the matching
+    // category filter (filter buttons are generated after products load,
+    // so retry briefly until they exist).
+    document.querySelectorAll(".showcase-card").forEach(function (card) {
+      card.addEventListener("click", function () {
+        var cat = card.getAttribute("data-cat");
+        document.getElementById("products").scrollIntoView({ behavior: "smooth" });
+        var tries = 0;
+        var timer = setInterval(function () {
+          var btn = document.querySelector('.filter-btn[data-category="' + cat + '"]');
+          if (btn) { btn.click(); clearInterval(timer); }
+          if (++tries > 20) clearInterval(timer);
+        }, 250);
+      });
+    });
+  </script>
   <script type="module" src="js/app.js"></script>
   <script type="module" src="js/header-auth.js"></script>
   <script src="js/theme.js"></script>

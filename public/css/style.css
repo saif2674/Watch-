@@ -1482,3 +1482,176 @@ html.dark-mode .faq-answer { color:#bbb; }
   left:auto;
   right:20px;
 }
+
+/* ============ WatchHub v2 Upgrade (2026-10-29) ============ */
+html { scroll-behavior: smooth; }
+
+/* Hero: real photo background + dark gradient overlay + gold title */
+.hero {
+  position: relative;
+  overflow: hidden;
+  background: url('https://images.unsplash.com/photo-1547996160-81dfa63595aa?w=1600') center 38% / cover no-repeat;
+  padding: 90px 20px;
+  isolation: isolate;
+}
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, rgba(10,10,10,0.88) 0%, rgba(10,10,10,0.55) 55%, rgba(60,45,20,0.45) 100%);
+  z-index: -1;
+}
+.hero-eyebrow {
+  letter-spacing: 4px;
+  font-size: 12px;
+  text-transform: uppercase;
+  color: #d4af86;
+  margin-bottom: 14px;
+  animation: heroFadeIn 0.9s ease both;
+}
+.hero-title {
+  background: linear-gradient(100deg, #f5e3bb 0%, #d4af86 45%, #fff2d5 70%, #b98d54 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  font-size: 52px;
+  text-shadow: none;
+}
+.hero-subtitle { font-size: 16px; }
+
+/* Trust strip (same claims as checkout) */
+.trust-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  max-width: 1100px;
+  margin: 26px auto 0;
+  padding: 0 20px;
+}
+.trust-strip-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  border: 1px solid rgba(212,175,134,0.45);
+  border-radius: 30px;
+  padding: 9px 18px;
+  font-size: 13px;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+.ts-icon { font-size: 15px; }
+
+/* Shop by Style showcase */
+.showcase { max-width: 1100px; margin: 10px auto 0; padding: 30px 20px 0; }
+.showcase-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #111;
+}
+.showcase-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+.showcase-card {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  height: 210px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+}
+.showcase-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+.showcase-card:hover img { transform: scale(1.09); }
+.showcase-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.05) 55%);
+  transition: background 0.3s ease;
+}
+.showcase-label {
+  position: absolute;
+  left: 18px;
+  bottom: 14px;
+  z-index: 1;
+  color: #fff;
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  display: flex;
+  flex-direction: column;
+}
+.showcase-label span {
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: #d4af86;
+  margin-top: 2px;
+}
+
+/* Product cards: even heights, clamped descriptions, richer price */
+.card-desc {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 54px;
+}
+.price { color: #8a6a34; letter-spacing: 0.3px; }
+
+/* Sticky filter bar */
+.filters {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(250,246,239,0.94);
+  backdrop-filter: blur(8px);
+  padding-bottom: 14px;
+  border-radius: 0 0 16px 16px;
+}
+
+/* Load error box (products / product detail) */
+.load-error {
+  grid-column: 1 / -1;
+  text-align: center;
+  background: #fff;
+  border: 1px solid #e5c9a8;
+  border-radius: 12px;
+  padding: 30px 20px;
+  max-width: 520px;
+  margin: 10px auto;
+}
+.load-error p { margin-bottom: 14px; color: #555; font-size: 14px; line-height: 1.5; }
+.load-error button {
+  padding: 10px 28px;
+  background: #111;
+  color: #fff;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* Dark mode for v2 pieces */
+html.dark-mode .showcase-title { color: #eee; }
+html.dark-mode .trust-strip-item { background: #1e1e1e; color: #eee; border-color: #444; }
+html.dark-mode .filters { background: rgba(18,18,18,0.94); }
+html.dark-mode .load-error { background: #1e1e1e; }
+html.dark-mode .load-error p { color: #bbb; }
+html.dark-mode .price { color: #d4af86; }
+
+@media (max-width: 600px) {
+  .hero { padding: 60px 16px; }
+  .hero-title { font-size: 38px; }
+  .showcase-card { height: 170px; }
+}

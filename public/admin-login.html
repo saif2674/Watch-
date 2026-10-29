@@ -8,34 +8,69 @@
 <style>
   .login-box { max-width: 350px; margin: 80px auto; padding: 30px; border-radius: 12px; box-shadow: 0 3px 12px rgba(0,0,0,0.1); background: #fff; }
   .login-box input { width: 100%; padding: 10px; margin-bottom: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
-  .login-box button { width: 100%; padding: 10px; border-radius: 8px; border: none; background: #d4af86; color: #fff; font-weight: 600; }
-  #error-msg { color: red; text-align: center; margin-top: 10px; }
+  .login-box button { width: 100%; padding: 10px; border-radius: 8px; border: none; background: #d4af86; color: #fff; font-weight: 600; cursor: pointer; }
+  #error-msg { color: red; text-align: center; margin-top: 10px; font-size: 13px; }
+  #ok-msg { color: green; text-align: center; margin-top: 10px; font-size: 13px; }
+  .login-links { text-align: center; margin-top: 14px; font-size: 13px; }
+  .login-links a { color: #8a6a34; text-decoration: none; cursor: pointer; }
+  .login-links a:hover { text-decoration: underline; }
+  .login-brand { text-align: center; font-family: 'Playfair Display', serif; font-size: 22px; margin-bottom: 4px; }
+  .login-sub { text-align: center; color: #888; font-size: 12px; margin-bottom: 18px; letter-spacing: 1px; }
 </style>
 </head>
 <body>
   <div class="login-box">
-    <h2 style="text-align:center;">Admin Login</h2>
+    <div class="login-brand">⌚ WatchHub</div>
+    <p class="login-sub">ADMIN PANEL</p>
     <input type="email" id="email" placeholder="Email">
     <input type="password" id="password" placeholder="Password">
     <button id="loginBtn">Login</button>
     <p id="error-msg"></p>
+    <p id="ok-msg"></p>
+    <div class="login-links">
+      <a id="forgot-link">Forgot password?</a> &middot; <a href="index.html">Back to store</a>
+    </div>
   </div>
 
   <script type="module">
     import { auth } from "./js/firebase-config.js";
-    import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+    import { signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
 
-    document.getElementById("loginBtn").addEventListener("click", async () => {
-      const email = document.getElementById("email").value;
+    const errorMsg = document.getElementById("error-msg");
+    const okMsg = document.getElementById("ok-msg");
+
+    async function doLogin() {
+      const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value;
-      const errorMsg = document.getElementById("error-msg");
       errorMsg.textContent = "";
+      okMsg.textContent = "";
 
       try {
         await signInWithEmailAndPassword(auth, email, password);
         window.location.href = "admin-dashboard.html";
       } catch (err) {
         errorMsg.textContent = "Login failed: " + err.message;
+      }
+    }
+
+    document.getElementById("loginBtn").addEventListener("click", doLogin);
+    document.getElementById("password").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") doLogin();
+    });
+
+    document.getElementById("forgot-link").addEventListener("click", async () => {
+      const email = document.getElementById("email").value.trim();
+      errorMsg.textContent = "";
+      okMsg.textContent = "";
+      if (!email) {
+        errorMsg.textContent = "Pehle apna admin email likhein, phir Forgot password par click karein.";
+        return;
+      }
+      try {
+        await sendPasswordResetEmail(auth, email);
+        okMsg.textContent = "Password reset email bhej di gayi hai — apna inbox check karein.";
+      } catch (err) {
+        errorMsg.textContent = "Reset failed: " + err.message;
       }
     });
   </script>

@@ -18,6 +18,28 @@ function getProductIdFromURL() {
   return params.get("id");
 }
 
+function fmtRs(n) {
+  return "Rs " + Number(n || 0).toLocaleString("en-US");
+}
+
+// Repairs gallery data: some stored entries have two URLs joined together
+// ("...w=500-https://..."). Split those back into separate valid URLs,
+// drop duplicates and anything that is not a real http(s) link.
+function sanitizeGallery(mainImage, gallery) {
+  const raw = [mainImage, ...(Array.isArray(gallery) ? gallery : [])];
+  const urls = [];
+  raw.forEach(entry => {
+    if (!entry || typeof entry !== "string") return;
+    entry.split(/(?=https?:\/\/)/).forEach(part => {
+      const cleaned = part.replace(/^-+|-+$/g, "").trim();
+      if (/^https?:\/\/\S+$/.test(cleaned) && !urls.includes(cleaned)) {
+        urls.push(cleaned);
+      }
+    });
+  });
+  return urls;
+}
+
 function renderDetailLoader() {
   detailContainer.innerHTML = `
     <div class="watch-loader-wrap">
@@ -80,7 +102,18 @@ async function renderProductDetail() {
   const id = getProductIdFromURL();
   renderDetailLoader();
 
-  const snap = await getDoc(doc(db, "products", String(id)));
+  let snap;
+  try {
+    snap = await getDoc(doc(db, "products", String(id)));
+  } catch (err) {
+    console.error("Failed to load product:", err);
+    detailContainer.innerHTML = `
+      <div class="load-error">
+        <p>⚠️ Product load nahi ho paya. Internet connection check karke dobara try karein.</p>
+        <button onclick="location.reload()">Retry</button>
+      </div>`;
+    return;
+  }
   if (!snap.exists()) {
     detailContainer.innerHTML = "<p>Product not found.</p>";
     return;
@@ -89,7 +122,7 @@ async function renderProductDetail() {
   currentProduct = snap.data();
   const inStock = currentProduct.inStock !== false;
   const isFav = auth.currentUser ? await isInWishlist(currentProduct.id) : false;
-  const allImages = [currentProduct.image, ...(currentProduct.gallery || [])].filter(Boolean);
+  const allImages = sanitizeGallery(currentProduct.image, currentProduct.gallery);
 
   const gallerySlidesHtml = allImages.map((url, i) =>
     `<div class="gallery-slide ${i === 0 ? "active" : ""}" style="background-image:url('${url}')"></div>`
@@ -130,7 +163,7 @@ async function renderProductDetail() {
         <h2>${currentProduct.name}</h2>
         <div class="rating-line">${ratingHtml}</div>
         <p>${currentProduct.description}</p>
-        <p class="price">Rs ${currentProduct.price}</p>
+        <p class="price">${fmtRs(currentProduct.price)}</p>
         ${specsHtml}
         <button onclick="addToCart(${currentProduct.id})" ${inStock ? "" : "disabled"}>${inStock ? "Add to Cart" : "Out of Stock"}</button>
       </div>
@@ -279,7 +312,7 @@ function renderCart() {
     row.innerHTML = `
       <div class="cart-item-info">
         <span class="cart-item-name">${item.name}</span>
-        <span class="cart-item-price">Rs ${item.price * item.qty}</span>
+        <span class="cart-item-price">${fmtRs(item.price * item.qty)}</span>
       </div>
       <div class="qty-controls">
         <button onclick="decreaseQty(${item.id})">-</button>
@@ -291,7 +324,7 @@ function renderCart() {
     cartItemsEl.appendChild(row);
   });
 
-  cartTotalEl.textContent = total;
+  cartTotalEl.textContent = Number(total).toLocaleString("en-US");
 }
 
 function toggleCart() {

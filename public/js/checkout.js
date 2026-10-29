@@ -14,6 +14,8 @@ const savedAddressSelect = document.getElementById("saved-address-select");
 
 let cart = JSON.parse(localStorage.getItem("watchCart")) || [];
 
+const fmt = (n) => Number(n || 0).toLocaleString("en-US");
+
 function renderCheckout() {
   if (cart.length === 0) {
     checkoutItemsEl.innerHTML = "<p>Your cart is empty.</p>";
@@ -31,13 +33,13 @@ function renderCheckout() {
     row.className = "cart-item";
     row.innerHTML = `
       <span>${item.name} x${item.qty}</span>
-      <span>Rs ${item.price * item.qty}</span>
+      <span>Rs ${fmt(item.price * item.qty)}</span>
     `;
     checkoutItemsEl.appendChild(row);
   });
 
-  checkoutSubtotalEl.textContent = subtotal;
-  checkoutTotalEl.textContent = subtotal + DELIVERY_CHARGE;
+  checkoutSubtotalEl.textContent = fmt(subtotal);
+  checkoutTotalEl.textContent = fmt(subtotal + DELIVERY_CHARGE);
 }
 
 async function loadSavedAddresses(user) {
@@ -115,11 +117,11 @@ whatsappBtn.addEventListener("click", async () => {
 
   let message = `Hello WatchHub, I would like to place an order:\n\n`;
   cart.forEach(item => {
-    message += `${item.name} x${item.qty} - Rs ${item.price * item.qty}\n`;
+    message += `${item.name} x${item.qty} - Rs ${fmt(item.price * item.qty)}\n`;
   });
-  message += `\nSubtotal: Rs ${subtotal}`;
-  message += `\nDelivery Charges: Rs ${DELIVERY_CHARGE}`;
-  message += `\nTotal: Rs ${total}`;
+  message += `\nSubtotal: Rs ${fmt(subtotal)}`;
+  message += `\nDelivery Charges: Rs ${fmt(DELIVERY_CHARGE)}`;
+  message += `\nTotal: Rs ${fmt(total)}`;
   message += `\n\nName: ${name}\nPhone: ${phone}\nAddress: ${address}`;
 
   window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, "_blank");
