@@ -34,13 +34,15 @@ onAuthStateChanged(auth, (user) => {
     if (favoriteBtn) favoriteBtn.style.display = "inline-flex";
 
     const label = user.displayName ? user.displayName.split(" ")[0] : "My Account";
-    accountBtn.style.display = "inline-flex";
-    accountBtn.innerHTML = `<span class="account-menu-icon">&#9776;</span> ${label}`;
+    if (accountBtn) {
+      accountBtn.style.display = "inline-flex";
+      accountBtn.innerHTML = `<span class="account-menu-icon">&#9776;</span> ${label}`;
+    }
   } else {
     if (loginBtn) loginBtn.style.display = "inline-block";
     if (signupBtn) signupBtn.style.display = "inline-block";
     if (logoutIconBtn) logoutIconBtn.style.display = "none";
     if (favoriteBtn) favoriteBtn.style.display = "none";
-    accountBtn.style.display = "none";
+    if (accountBtn) accountBtn.style.display = "none";
   }
 });
