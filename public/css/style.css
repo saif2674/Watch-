@@ -551,17 +551,17 @@ button:active { transform: scale(0.96); }
 .logo-wrap::before {
   content: "";
   position: absolute;
-  inset: -34px -70px;
-  background: radial-gradient(ellipse at center, rgba(255,205,70,0.55) 0%, rgba(255,175,0,0.22) 45%, rgba(255,175,0,0) 70%);
-  filter: blur(16px);
+  inset: -12px -28px;
+  background: radial-gradient(ellipse at center, rgba(190,215,255,0.34) 0%, rgba(140,170,230,0.12) 48%, rgba(140,170,230,0) 68%);
+  filter: blur(9px);
   border-radius: 50%;
   z-index: 0;
-  animation: logo-bg-pulse 2.8s ease-in-out infinite;
+  animation: logo-bg-pulse 3.4s ease-in-out infinite;
   pointer-events: none;
 }
 @keyframes logo-bg-pulse {
-  0%, 100% { opacity: 0.45; transform: scale(0.96); }
-  50% { opacity: 1; transform: scale(1.05); }
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 0.85; }
 }
 .logo-wrap img {
   position: relative;
