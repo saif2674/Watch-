@@ -1956,3 +1956,93 @@ body.cart-open .theme-toggle-btn {
 @media (prefers-reduced-motion: reduce) {
   .hero::before, .hero::after { animation: none; }
 }
+
+/* ============ 4D CINEMATIC HERO + MOBILE 3D (2026-11-26) ============ */
+.hero { background: #0a0a0a; }
+.hero-bg {
+  position: absolute;
+  inset: -7%;
+  background: url('https://images.unsplash.com/photo-1547996160-81dfa63595aa?w=1600') center 38% / cover no-repeat;
+  z-index: 0;
+  animation: hero-kenburns 22s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@keyframes hero-kenburns {
+  from { transform: scale(1.02) translate(0, 0); }
+  to   { transform: scale(1.17) translate(-1.6%, 2.2%); }
+}
+.hero::before { z-index: 1; }
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 32%, rgba(255,236,190,0.16) 48%, rgba(255,255,255,0.10) 52%, transparent 66%);
+  background-size: 260% 100%;
+  background-position: 130% 0;
+  z-index: 1;
+  animation: hero-shine 6.5s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes hero-shine {
+  0% { background-position: 130% 0; }
+  38% { background-position: -60% 0; }
+  100% { background-position: -60% 0; }
+}
+.hero-ring {
+  position: absolute;
+  width: 330px; height: 330px;
+  left: 50%; top: 50%;
+  margin: -165px 0 0 -165px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  border-top-color: rgba(212,175,86,0.55);
+  border-right-color: rgba(212,175,86,0.22);
+  z-index: 1;
+  animation: hero-ring-spin 16s linear infinite;
+  pointer-events: none;
+}
+.hero-ring::before {
+  content: "";
+  position: absolute;
+  inset: 16px;
+  border-radius: 50%;
+  border: 1px dashed rgba(190,215,255,0.30);
+  animation: hero-ring-spin-rev 24s linear infinite;
+}
+@keyframes hero-ring-spin { to { transform: rotate(360deg); } }
+@keyframes hero-ring-spin-rev { to { transform: rotate(-360deg); } }
+.hero-content { z-index: 2; }
+.hero-title {
+  background-size: 220% 100%;
+  animation: hero-title-shine 5.5s ease-in-out infinite;
+}
+@keyframes hero-title-shine {
+  0%, 100% { background-position: 0% 0; }
+  50% { background-position: 100% 0; }
+}
+/* Cards: 3D flip-in on scroll (visible on phones too) + light sweep */
+.card { position: relative; transform: translateY(34px) rotateX(16deg); }
+.card.in-view { transform: translateY(0) rotateX(0deg); }
+.card::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 220px;
+  background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,0.22) 50%, transparent 65%);
+  background-size: 260% 100%;
+  background-position: 130% 0;
+  animation: card-shine 6s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 2;
+}
+.products .card:nth-child(3n)::after { animation-delay: 1.4s; }
+.products .card:nth-child(4n)::after { animation-delay: 2.6s; }
+.products .card:nth-child(5n)::after { animation-delay: 0.7s; }
+@keyframes card-shine {
+  0% { background-position: 130% 0; }
+  32% { background-position: -60% 0; }
+  100% { background-position: -60% 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-bg, .hero::after, .hero-ring, .hero-ring::before, .hero-title, .card::after { animation: none; }
+}
