@@ -2096,3 +2096,31 @@ body.cart-open .theme-toggle-btn {
 @media (prefers-reduced-motion: reduce) {
   .card img, .detail-card img, .hero-dust, .hero-content, .hero-ring { animation: none; }
 }
+
+/* ============ SELECTED: #9 ROTATING RAYS BEHIND IMAGE (2026-11-26) ============ */
+.hero-wrap { position: relative; }
+.hero { position: relative; z-index: 1; }
+.hero-rays {
+  position: absolute;
+  left: 50%; top: 50%;
+  width: min(175vw, 1000px);
+  height: min(175vw, 1000px);
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: repeating-conic-gradient(rgba(212,175,86,0.32) 0deg 9deg, transparent 9deg 28deg);
+  -webkit-mask-image: radial-gradient(circle, #000 25%, transparent 68%);
+  mask-image: radial-gradient(circle, #000 25%, transparent 68%);
+  animation: rays-spin 46s linear infinite;
+  z-index: 0;
+  pointer-events: none;
+}
+@keyframes rays-spin { to { transform: rotate(360deg); } }
+/* All other loop animations OFF (per selection) */
+.hero-bg { animation: none; }
+.hero::after { animation: none; background: none; }
+.hero-ring, .hero-dust { display: none; }
+.hero-content { animation: none; }
+.hero-title { animation: none; }
+.card img, .detail-card img { animation: none; }
+.card::after { display: none; }
+@media (prefers-reduced-motion: reduce) { .hero-rays { animation: none; } }
