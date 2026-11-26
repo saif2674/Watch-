@@ -2046,3 +2046,53 @@ body.cart-open .theme-toggle-btn {
 @media (prefers-reduced-motion: reduce) {
   .hero-bg, .hero::after, .hero-ring, .hero-ring::before, .hero-title, .card::after { animation: none; }
 }
+
+/* ============ PRODUCTS 2D + HERO ENHANCED (2026-11-26) ============ */
+/* Products: 3D OFF - flat 2D, but every picture stays alive (2D motion) */
+.products, .showcase-grid { perspective: none; }
+.card { transform: translateY(30px); transform-style: flat; }
+.card.in-view { transform: translateY(0); }
+.card img { transform: none; animation: prod-zoom 9s ease-in-out infinite alternate; }
+.card:hover img { transform: none; }
+.card-body { transform: none; }
+.showcase-card { transform-style: flat; }
+.showcase-card img { transform: none; }
+.detail-card img { animation: prod-zoom 11s ease-in-out infinite alternate; }
+@keyframes prod-zoom {
+  from { transform: scale(1) translate(0, 0); }
+  to   { transform: scale(1.13) translate(-1.6%, 1.6%); }
+}
+.products .card:nth-child(2n) img { animation-duration: 11s; animation-delay: -3s; }
+.products .card:nth-child(3n) img { animation-duration: 8s;  animation-delay: -5s; }
+.products .card:nth-child(4n) img { animation-duration: 10s; animation-delay: -2s; }
+.products .card:nth-child(5n) img { animation-duration: 12s; animation-delay: -7s; }
+/* Hero: a DIFFERENT, richer animation - floating golden dust + floating content + glowing ring */
+.hero-dust {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background-image:
+    radial-gradient(rgba(255,220,150,0.55) 1.5px, transparent 1.7px),
+    radial-gradient(rgba(190,215,255,0.40) 1.2px, transparent 1.4px);
+  background-size: 110px 110px, 150px 150px;
+  background-position: 0 0, 40px 60px;
+  animation: hero-dust-rise 13s linear infinite;
+  pointer-events: none;
+}
+@keyframes hero-dust-rise {
+  from { background-position: 0 0, 40px 60px; }
+  to   { background-position: 0 -220px, 40px -300px; }
+}
+.hero-content { animation: hero-float 6s ease-in-out infinite; }
+@keyframes hero-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
+}
+.hero-ring { animation: hero-ring-spin 16s linear infinite, ring-glow 3.4s ease-in-out infinite; }
+@keyframes ring-glow {
+  0%, 100% { box-shadow: 0 0 0 rgba(212,175,86,0); opacity: 0.75; }
+  50% { box-shadow: 0 0 36px rgba(212,175,86,0.30); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .card img, .detail-card img, .hero-dust, .hero-content, .hero-ring { animation: none; }
+}
