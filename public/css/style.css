@@ -1879,3 +1879,32 @@ body.cart-open .theme-toggle-btn {
   font-size: 13.5px;
 }
 .wishlist-add-cart-btn:active { transform: scale(0.97); }
+
+/* ============ HERO RING - circle wali animation (2026-11-26) ============ */
+.hero-ring {
+  position: absolute;
+  width: 330px; height: 330px;
+  left: 50%; top: 50%;
+  margin: -165px 0 0 -165px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  border-top-color: rgba(212,175,86,0.55);
+  border-right-color: rgba(212,175,86,0.22);
+  z-index: 0;
+  animation: hero-ring-spin 16s linear infinite;
+  pointer-events: none;
+}
+.hero-ring::before {
+  content: "";
+  position: absolute;
+  inset: 16px;
+  border-radius: 50%;
+  border: 1px dashed rgba(190,215,255,0.30);
+  animation: hero-ring-spin-rev 24s linear infinite;
+}
+@keyframes hero-ring-spin { to { transform: rotate(360deg); } }
+@keyframes hero-ring-spin-rev { to { transform: rotate(-360deg); } }
+.hero-content { position: relative; z-index: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .hero-ring, .hero-ring::before { animation: none; }
+}
