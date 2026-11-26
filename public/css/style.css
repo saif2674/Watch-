@@ -1885,13 +1885,15 @@ body.cart-open .theme-toggle-btn {
   position: absolute;
   width: 330px; height: 330px;
   left: 50%; top: 50%;
-  margin: -165px 0 0 -165px;
+  translate: -50% -50%;
   border-radius: 50%;
   border: 2px solid transparent;
   border-top-color: rgba(212,175,86,0.55);
   border-right-color: rgba(212,175,86,0.22);
   z-index: 0;
-  animation: hero-ring-spin 16s linear infinite;
+  animation: hero-ring-spin 20s linear infinite;
+  will-change: transform;
+  backface-visibility: hidden;
   pointer-events: none;
 }
 .hero-ring::before {
@@ -1900,7 +1902,9 @@ body.cart-open .theme-toggle-btn {
   inset: 16px;
   border-radius: 50%;
   border: 1px dashed rgba(190,215,255,0.30);
-  animation: hero-ring-spin-rev 24s linear infinite;
+  animation: hero-ring-spin-rev 30s linear infinite;
+  will-change: transform;
+  backface-visibility: hidden;
 }
 @keyframes hero-ring-spin { to { transform: rotate(360deg); } }
 @keyframes hero-ring-spin-rev { to { transform: rotate(-360deg); } }
