@@ -42,7 +42,7 @@
   }
   .auth-brand-inner { position: relative; animation: authUp 0.8s ease both; }
   @keyframes authUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
-  .auth-brand-logo { max-width: 150px; margin-bottom: 18px; filter: drop-shadow(0 0 10px rgba(212,175,134,0.6)); }
+  .auth-brand-logo { max-width: 150px; margin-bottom: 18px; position: relative; z-index: 1; }
   .auth-brand h1 { font-family: 'Playfair Display', serif; font-size: 40px; line-height: 1.15; margin: 0 0 10px;
     background: linear-gradient(100deg, #f5e3bb, #d4af86 55%, #fff2d5);
     -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
@@ -114,7 +114,7 @@
   <div class="auth-shell">
     <aside class="auth-brand">
       <div class="auth-brand-inner">
-        <img src="logo.png" alt="WatchHub" class="auth-brand-logo">
+        <div class="logo-wrap"><img src="logo.png" alt="WatchHub" class="auth-brand-logo"></div>
         <h1>Time, Worn<br>Beautifully.</h1>
         <p>Premium watches with cash on delivery across Pakistan. Login to track your orders, save favorites and check out faster.</p>
         <div class="auth-points">

@@ -540,27 +540,43 @@ button:active { transform: scale(0.96); }
   50% { opacity: 1; }
 }
 
-/* Logo Glow Animation */
+/* Logo: blinking light sits BEHIND the logo (background glow),
+   never over it - the logo itself stays sharp and bright. */
+.logo-wrap {
+  position: relative;
+  display: block;
+  width: fit-content;
+  margin: 0 auto;
+}
+.logo-wrap::before {
+  content: "";
+  position: absolute;
+  inset: -34px -70px;
+  background: radial-gradient(ellipse at center, rgba(255,205,70,0.55) 0%, rgba(255,175,0,0.22) 45%, rgba(255,175,0,0) 70%);
+  filter: blur(16px);
+  border-radius: 50%;
+  z-index: 0;
+  animation: logo-bg-pulse 2.8s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes logo-bg-pulse {
+  0%, 100% { opacity: 0.45; transform: scale(0.96); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+.logo-wrap img {
+  position: relative;
+  z-index: 1;
+}
 .site-logo {
   max-width: 340px;
   height: auto;
   cursor: pointer;
   display: block;
   margin: 0 auto;
-  filter: drop-shadow(0 0 6px rgba(212,175,86,0.5)) drop-shadow(0 0 12px rgba(212,175,86,0.3));
-  animation: logo-glow-pulse 2.8s ease-in-out infinite;
   transition: transform 0.3s ease;
 }
 .site-logo:hover {
   transform: scale(1.04);
-}
-@keyframes logo-glow-pulse {
-  0%, 100% {
-    filter: drop-shadow(0 0 6px rgba(212,175,86,0.45)) drop-shadow(0 0 14px rgba(212,175,86,0.25));
-  }
-  50% {
-    filter: drop-shadow(0 0 14px rgba(212,175,86,0.8)) drop-shadow(0 0 28px rgba(212,175,86,0.5));
-  }
 }
 
 /* Account button + dropdown */
